@@ -675,6 +675,8 @@
   .textarea{
     min-height:96px;
     resize:vertical;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
   }
 
   .row2{
@@ -792,6 +794,41 @@
     font-size:12px;
     color:var(--muted);
     line-height:1.5;
+  }
+
+  .builderContextMenu{
+    position:fixed;
+    min-width:180px;
+    background:rgba(15,23,42,.96);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    padding:8px;
+    box-shadow:0 24px 60px rgba(2,6,23,.35);
+    backdrop-filter:blur(14px);
+    z-index:9999;
+  }
+
+  .builderContextMenu button{
+    width:100%;
+    text-align:left;
+    border:none;
+    background:transparent;
+    color:#fff;
+    padding:12px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:800;
+    font-size:13px;
+  }
+
+  .builderContextMenu button:hover{
+    background:rgba(99,102,241,.16);
+  }
+
+  .builderContextMenu button.danger:hover{
+    background:rgba(239,68,68,.16);
+    color:#fecaca;
   }
 
   @media (max-width: 1360px){
@@ -1053,9 +1090,18 @@
   </aside>
 </div>
 
+<div id="builderContextMenu" class="builderContextMenu" style="display:none;">
+  <button type="button" data-action="duplicate">Duplicar</button>
+  <button type="button" data-action="delete" class="danger">Eliminar</button>
+</div>
+
 <script>
+  window.__SURVEY_ID__ = @json($survey->id);
   window.__BUILDER_STATE__ = @json($builderState);
-  window.__AUTOSAVE_URL__ = @json(route('builder.autosave', $survey));
+  window.__AUTOSAVE_URL__ = @json(route('builder.autosave', ['survey' => $survey->id]));
+  window.__BLOCK_CREATE_URL__ = @json(route('builder.blocks.store', ['survey' => $survey->id]));
+  window.__BLOCK_UPDATE_URL_TEMPLATE__ = @json(url('/builder/'.$survey->id.'/blocks/__BLOCK_ID__'));
+  window.__BLOCK_DELETE_URL_TEMPLATE__ = @json(url('/builder/'.$survey->id.'/blocks/__BLOCK_ID__'));
   window.__CSRF__ = @json(csrf_token());
 
   window.addEventListener('DOMContentLoaded', () => {

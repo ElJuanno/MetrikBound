@@ -5,26 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Answer extends Model
+class SurveyBlock extends Model
 {
     use HasFactory;
 
-    protected $table = 'answers';
+    protected $table = 'survey_blocks';
 
     protected $fillable = [
-        'response_id',
+        'survey_id',
         'question_id',
-        'value_text',
-        'value_json',
+        'type',
+        'position',
+        'x',
+        'y',
+        'width',
+        'height',
+        'props_json',
     ];
 
     protected $casts = [
-        'value_json' => 'array',
+        'props_json' => 'array',
     ];
 
-    public function response()
+    public function survey()
     {
-        return $this->belongsTo(Response::class, 'response_id');
+        return $this->belongsTo(Survey::class, 'survey_id');
     }
 
     public function question()

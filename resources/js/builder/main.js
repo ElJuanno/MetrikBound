@@ -4,6 +4,7 @@ import {
   addBlockToStore,
   exportStateSnapshot,
   getBlockById,
+  getSelectedBlock,
   getSelectedId,
   removeBlock,
   replaceState,
@@ -26,6 +27,7 @@ let initialized = false;
 let draggedToolType = null;
 
 const DRAG_MIME = 'application/x-builder-block';
+const persistTimers = new Map();
 
 function setCloud(state, savedAt = null) {
   const cloudText = document.getElementById('cloudText');
@@ -58,7 +60,9 @@ function setCloud(state, savedAt = null) {
 
 async function autosaveNow() {
   try {
-    const payload = { state: exportStateSnapshot() };
+    const payload = {
+      builder_state: exportStateSnapshot(),
+    };
 
     const res = await fetch(window.__AUTOSAVE_URL__, {
       method: 'POST',
@@ -115,7 +119,6 @@ function getPaperDropPosition(clientX, clientY, blockEl = null) {
   if (!dom.paper) return { x: 80, y: 120 };
 
   const rect = dom.paper.getBoundingClientRect();
-
   const blockWidth = blockEl?.offsetWidth || 260;
   const blockHeight = blockEl?.offsetHeight || 110;
 
@@ -132,6 +135,199 @@ function getPaperDropPosition(clientX, clientY, blockEl = null) {
   );
 
   return { x, y };
+}
+
+function buildCreatePayload(block) {
+  return {
+    type: block.kind,
+    x: Math.round(block.x ?? 80),
+    y: Math.round(block.y ?? 120),
+    width: Math.round(block.w ?? 320),
+    height: block.h ? Math.round(block.h) : null,
+    content: block.props?.html ?? null,
+    required: !!block.props?.required,
+    options: Array.isArray(block.props?.options) ? block.props.options : [],
+  };
+}
+
+function buildUpdatePayload(block) {
+  return {
+    type: block.kind,
+    x: Math.round(block.x ?? 80),
+    y: Math.round(block.y ?? 120),
+    width: Math.round(block.w ?? 320),
+    height: block.h ? Math.round(block.h) : null,
+    content: block.props?.html ?? null,
+    required: !!block.props?.required,
+    options: Array.isArray(block.props?.options) ? block.props.options : [],
+    props_json: block.props ?? {},
+  };
+}
+
+function getUpdateUrl(block) {
+  if (!block?.dbId) return null;
+  return window.__BLOCK_UPDATE_URL_TEMPLATE__.replace('__BLOCK_ID__', block.dbId);
+}
+
+function getDeleteUrl(block) {
+  if (!block?.dbId) return null;
+  return window.__BLOCK_DELETE_URL_TEMPLATE__.replace('__BLOCK_ID__', block.dbId);
+}
+
+async function createBlockInDatabase(localBlockId) {
+  const block = getBlockById(localBlockId);
+  if (!block) return;
+
+  const payload = buildCreatePayload(block);
+
+  try {
+    const res = await fetch(window.__BLOCK_CREATE_URL__, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': window.__CSRF__,
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`HTTP ${res.status} - ${text}`);
+    }
+
+    const data = await res.json();
+
+    updateBlock(localBlockId, {
+      dbId: data?.block?.id ?? null,
+      questionId: data?.question?.id ?? null,
+      optionIds: Array.isArray(data?.options) ? data.options.map((o) => o.id) : [],
+    });
+
+    autosaveDebounced();
+  } catch (error) {
+    console.error('Error creando bloque en BD:', error);
+    setCloud('error');
+  }
+}
+
+async function updateBlockInDatabase(localBlockId) {
+  const block = getBlockById(localBlockId);
+  if (!block || !block.dbId) return;
+
+  const url = getUpdateUrl(block);
+  if (!url) return;
+
+  const payload = buildUpdatePayload(block);
+
+  try {
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': window.__CSRF__,
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`HTTP ${res.status} - ${text}`);
+    }
+
+    await res.json();
+    autosaveDebounced();
+  } catch (error) {
+    console.error('Error actualizando bloque en BD:', error);
+    setCloud('error');
+  }
+}
+
+function persistBlockDebounced(localBlockId, delay = 500) {
+  if (!localBlockId) return;
+
+  const prev = persistTimers.get(localBlockId);
+  if (prev) clearTimeout(prev);
+
+  const timer = setTimeout(async () => {
+    persistTimers.delete(localBlockId);
+    await updateBlockInDatabase(localBlockId);
+  }, delay);
+
+  persistTimers.set(localBlockId, timer);
+}
+
+window.builderPersistBlock = persistBlockDebounced;
+window.builderPersistSelected = () => {
+  const selected = getSelectedBlock();
+  if (!selected) return;
+  persistBlockDebounced(selected.id);
+};
+
+async function deleteBlockInDatabase(block) {
+  if (!block?.dbId) return true;
+
+  const url = getDeleteUrl(block);
+  if (!url) return false;
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': window.__CSRF__,
+      Accept: 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status} - ${text}`);
+  }
+
+  return true;
+}
+
+async function deleteSelectedBlock() {
+  const selectedId = getSelectedId();
+  if (!selectedId) return;
+
+  const block = getBlockById(selectedId);
+  if (!block) return;
+
+  try {
+    await deleteBlockInDatabase(block);
+    removeBlock(selectedId);
+    renderCanvas();
+    clearSelectionUI();
+    autosaveDebounced();
+  } catch (error) {
+    console.error('Error eliminando bloque:', error);
+    setCloud('error');
+  }
+}
+
+async function duplicateBlock(localBlockId) {
+  const original = getBlockById(localBlockId);
+  if (!original) return;
+
+  const clone = createBlockModel(original.kind, (original.x || 80) + 24, (original.y || 120) + 24);
+
+  updateBlock(clone.id, {
+    w: original.w,
+    h: original.h,
+    props: {
+      ...original.props,
+      options: Array.isArray(original.props?.options) ? [...original.props.options] : original.props?.options,
+    },
+  });
+
+  addBlockToStore(clone);
+  renderCanvas();
+  setSelectedId(clone.id);
+  selectBlockById(clone.id);
+
+  await createBlockInDatabase(clone.id);
 }
 
 function bindTools() {
@@ -181,7 +377,7 @@ function bindPaperDrop() {
     dom.paper.classList.remove('drag-over');
   };
 
-  const performDrop = (e) => {
+  const performDrop = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     dom.paper.classList.remove('drag-over');
@@ -216,7 +412,8 @@ function bindPaperDrop() {
     renderCanvas();
     setSelectedId(temp.id);
     selectBlockById(temp.id);
-    autosaveDebounced();
+
+    await createBlockInDatabase(temp.id);
   };
 
   dom.canvasWrap.addEventListener('dragover', allowDrop);
@@ -296,6 +493,7 @@ function bindBlockInteractions() {
 
   function onUp() {
     if (activeId) {
+      persistBlockDebounced(activeId, 250);
       autosaveDebounced();
     }
 
@@ -389,12 +587,13 @@ function bindBlockInteractions() {
       if (propText) propText.value = editable.innerText;
     }
 
+    persistBlockDebounced(id, 500);
     autosaveDebounced();
   });
 }
 
 function bindKeyboard() {
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', async (e) => {
     const inEditable =
       document.activeElement &&
       (document.activeElement.isContentEditable ||
@@ -403,11 +602,62 @@ function bindKeyboard() {
     const selectedId = getSelectedId();
     if (!selectedId || inEditable) return;
 
-    if (e.key === 'Delete') {
-      removeBlock(selectedId);
-      renderCanvas();
-      clearSelectionUI();
-      autosaveDebounced();
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      await deleteSelectedBlock();
+    }
+  });
+}
+
+function bindContextMenu() {
+  const menu = document.getElementById('builderContextMenu');
+  if (!menu || !dom.paper) return;
+
+  let targetBlockId = null;
+
+  function hideMenu() {
+    menu.style.display = 'none';
+    targetBlockId = null;
+  }
+
+  function showMenu(x, y, blockId) {
+    targetBlockId = blockId;
+    menu.style.display = 'block';
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+  }
+
+  dom.paper.addEventListener('contextmenu', (e) => {
+    const blockEl = e.target.closest('.block');
+    if (!blockEl) return;
+
+    e.preventDefault();
+
+    const id = blockEl.dataset.id;
+    setSelectedId(id);
+    selectBlockById(id);
+
+    showMenu(e.clientX, e.clientY, id);
+  });
+
+  document.addEventListener('click', () => hideMenu());
+  document.addEventListener('scroll', () => hideMenu(), true);
+  window.addEventListener('resize', () => hideMenu());
+
+  menu.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    if (!btn || !targetBlockId) return;
+
+    const action = btn.dataset.action;
+    hideMenu();
+
+    if (action === 'delete') {
+      await deleteSelectedBlock();
+      return;
+    }
+
+    if (action === 'duplicate') {
+      await duplicateBlock(targetBlockId);
     }
   });
 }
@@ -467,6 +717,7 @@ function init() {
   bindPaperDrop();
   bindBlockInteractions();
   bindKeyboard();
+  bindContextMenu();
   bindTabs();
 
   renderCanvas();

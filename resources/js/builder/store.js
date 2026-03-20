@@ -26,6 +26,10 @@ export function getBlockById(id) {
   return getBlocks().find((b) => String(b.id) === String(id)) || null;
 }
 
+export function getBlockByDbId(dbId) {
+  return getBlocks().find((b) => String(b.dbId) === String(dbId)) || null;
+}
+
 export function setBlocks(blocks) {
   BuilderStore.state.blocks = Array.isArray(blocks) ? blocks : [];
 }

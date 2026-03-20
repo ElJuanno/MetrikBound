@@ -38,9 +38,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('surveys.publish');
     });
     // Builder (Editor)
-    Route::get('/builder/{survey}', [BuilderController::class, 'edit'])->name('builder.edit');
-    Route::post('/builder/{survey}/autosave', [BuilderController::class, 'autosave'])->name('builder.autosave');
 
+
+Route::get('/builder/{survey}', [BuilderController::class, 'edit'])->name('builder.edit');
+Route::post('/builder/{survey}/autosave', [BuilderController::class, 'autosave'])->name('builder.autosave');
+
+Route::post('/builder/{survey}/blocks', [BuilderController::class, 'storeBlock'])->name('builder.blocks.store');
+Route::put('/builder/{survey}/blocks/{block}', [BuilderController::class, 'updateBlock'])->name('builder.blocks.update');
+Route::delete('/builder/{survey}/blocks/{block}', [BuilderController::class, 'deleteBlock'])->name('builder.blocks.delete');
     // Extra pages (si solo son vistas)
     Route::view('/templates', 'templates.index')->name('templates.index');
     Route::view('/results', 'results.index')->name('results.index');

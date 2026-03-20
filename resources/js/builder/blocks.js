@@ -11,30 +11,7 @@ export function uid() {
 
 export function createBlockModel(kind, x = 80, y = 120) {
   const defaults = BLOCK_DEFAULTS[kind];
-  if (kind === 'q_select') {
-  return {
-    id: crypto.randomUUID(),
-    kind: 'q_select',
-    x,
-    y,
-    w: 320,
-    h: null,
-    z: 1,
-    locked: false,
-    props: {
-      html: 'Combo box',
-      font: 'system',
-      fontSize: 14,
-      color: '#0b1220',
-      bg: '#ffffff',
-      align: 'left',
-      alpha: 100,
-      required: false,
-      optColor: '#475569',
-      options: ['Opción 1', 'Opción 2', 'Opción 3'],
-    },
-  };
-}
+
   if (!defaults) {
     throw new Error(`Tipo de bloque no soportado: ${kind}`);
   }
@@ -42,7 +19,10 @@ export function createBlockModel(kind, x = 80, y = 120) {
   const model = deepClone(defaults);
 
   return {
-    id: uid(),
+    id: uid(),            // id local del frontend
+    dbId: null,           // id real de survey_blocks
+    questionId: null,     // id real de questions
+    optionIds: [],        // ids reales de question_options
     kind: model.kind,
     variant: model.variant ?? null,
     x,

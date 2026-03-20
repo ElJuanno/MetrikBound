@@ -464,6 +464,7 @@ export function bindInspector() {
       if (editable) editable.innerText = dom.propText.value;
 
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -481,6 +482,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -498,6 +500,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -516,6 +519,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -534,6 +538,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -552,6 +557,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -569,17 +575,24 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
   if (dom.propOptions) {
+    dom.propOptions.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.stopPropagation();
+      }
+    });
+
     dom.propOptions.addEventListener('input', () => {
       const block = getSelectedBlock();
       if (!block) return;
       if (!['q_radio', 'q_check', 'q_select'].includes(block.kind)) return;
 
       const arr = dom.propOptions.value
-        .split('\n')
+        .split(/\r?\n/)
         .map((s) => s.trim())
         .filter(Boolean);
 
@@ -593,6 +606,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -612,6 +626,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 
@@ -632,6 +647,7 @@ export function bindInspector() {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     });
   }
 }
@@ -659,6 +675,7 @@ export function pickImageForBlock(blockId) {
       renderCanvas();
       selectBlockById(block.id);
       window.builderAutosave?.();
+      window.builderPersistSelected?.();
     };
 
     reader.readAsDataURL(file);
