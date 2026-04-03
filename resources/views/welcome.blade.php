@@ -647,7 +647,7 @@
 
       <div class="nav-actions">
         <a href="/login" class="btn btn-secondary">Iniciar sesión</a>
-        <a href="#" class="btn btn-primary">Crear gratis</a>
+        <a href="/register" class="btn btn-primary">Crear cuenta</a>
       </div>
     </div>
   </nav>
