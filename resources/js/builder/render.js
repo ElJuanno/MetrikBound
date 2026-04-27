@@ -298,6 +298,63 @@ function buildBlockInnerHtml(block) {
     `;
   }
 
+  if (block.kind === 'q_yesno') {
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, '¿Estás de acuerdo?'))}</div>
+      <div class="reqTag" data-req>Requerida</div>
+      <div style="display:flex;gap:10px;margin-top:10px;">
+        <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.04));">Sí</div>
+        <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.04));">No</div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'q_stars') {
+    const stars = block.props.stars || 5;
+    const starSvg = '<svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Califica tu experiencia'))}</div>
+      <div class="reqTag" data-req>Requerida</div>
+      <div style="display:flex;gap:6px;margin-top:10px;justify-content:center;">
+        ${starSvg.repeat(stars)}
+      </div>
+    `;
+  }
+
+  if (block.kind === 'q_numeric') {
+    const min = block.props.min || 1;
+    const max = block.props.max || 10;
+    const range = max - min + 1;
+    
+    if (range <= 15) {
+      const buttons = [];
+      for (let i = min; i <= max; i++) {
+        buttons.push(`<span>${i}</span>`);
+      }
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Del 1 al 10'))}</div>
+        <div class="reqTag" data-req>Requerida</div>
+        <div class="scale">${buttons.join('')}</div>
+      `;
+    } else {
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Del 1 al 10'))}</div>
+        <div class="reqTag" data-req>Requerida</div>
+        <div style="margin-top:10px;">
+          <input type="range" min="${min}" max="${max}" value="${min}" style="width:100%;accent-color:var(--brandA);">
+          <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--muted);">
+            <span>${min}</span>
+            <span>${max}</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
   if (block.kind === 'img') {
     return `
       <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
@@ -340,6 +397,12 @@ export function renderBlockElement(block) {
 
   if (block.locked) {
     el.classList.add('locked');
+  }
+
+  // Aplicar modo de vista guardado
+  const savedMode = localStorage.getItem('builderViewMode') || 'block';
+  if (savedMode === 'clean') {
+    el.classList.add('clean-view');
   }
 
   if (block.props.color) {
@@ -583,6 +646,7 @@ export function bindInspector() {
     dom.propOptions.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.stopPropagation();
+        // No prevenir default para permitir nueva línea
       }
     });
 
@@ -596,6 +660,7 @@ export function bindInspector() {
         .map((s) => s.trim())
         .filter(Boolean);
 
+      // Permitir cualquier cantidad de opciones, mínimo 1
       updateBlock(block.id, {
         h: null,
         props: {

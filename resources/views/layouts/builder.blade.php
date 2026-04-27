@@ -489,10 +489,10 @@
       let shareMode = 'anonymous';
 
       function buildShareUrl() {
-        @if(isset($survey) && !empty($survey->token) && \Illuminate\Support\Facades\Route::has('surveys.public.show'))
-          const base = `{{ route('surveys.public.show', $survey->token) }}`;
+        @if(isset($survey) && !empty($survey->share_token) && \Illuminate\Support\Facades\Route::has('surveys.public.show'))
+          const base = `{{ route('surveys.public.show', $survey->share_token) }}`;
         @elseif(isset($survey))
-          const base = `{{ url('/s/'.($survey->token ?? 'sin-token')) }}`;
+          const base = `{{ url('/s/'.($survey->share_token ?? 'sin-token')) }}`;
         @else
           const base = window.location.href;
         @endif

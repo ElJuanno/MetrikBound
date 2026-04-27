@@ -153,30 +153,26 @@
 
   .leftPanel{
     border-right:1px solid var(--line);
-    background:linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.70));
-    backdrop-filter: blur(14px);
+    background:#fafafa;
     padding:14px;
     overflow:auto;
   }
 
   body[data-theme="dark"] .leftPanel{
-    background:
-      linear-gradient(180deg, rgba(17,24,39,.92), rgba(17,24,39,.82)),
-      linear-gradient(180deg, rgba(99,102,241,.06), rgba(34,211,238,.04));
+    background:#0f172a;
   }
 
   .leftHead{
     border:1px solid var(--line);
-    border-radius:20px;
-    background: rgba(255,255,255,.78);
-    backdrop-filter: blur(10px);
+    border-radius:12px;
+    background: #ffffff;
     padding:14px 16px;
-    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
     margin-bottom:12px;
   }
 
   body[data-theme="dark"] .leftHead{
-    background: rgba(17,24,39,.78);
+    background: #1e293b;
   }
 
   .panelTitle{
@@ -280,6 +276,161 @@
     background: rgba(255,255,255,.05);
   }
 
+  /* Estilos tipo Canva para previsualizaciones */
+  .stylePreview{
+    border-radius:16px;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,.78);
+    backdrop-filter: blur(10px);
+    cursor:pointer;
+    user-select:none;
+    transition:.15s ease;
+    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    overflow:hidden;
+    position:relative;
+  }
+
+  body[data-theme="dark"] .stylePreview{
+    background: rgba(17,24,39,.78);
+  }
+
+  .stylePreview::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(34,211,238,.05));
+    opacity:0;
+    transition:.15s ease;
+  }
+
+  .stylePreview:hover{
+    border-color: color-mix(in oklab, var(--brandA) 32%, var(--line));
+    box-shadow: 0 18px 40px rgba(99,102,241,.12);
+    transform: translateY(-1px);
+  }
+
+  .stylePreview:hover::before{
+    opacity:1;
+  }
+
+  .previewBox{
+    padding:16px 14px;
+    min-height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg, rgba(248,250,252,.95), rgba(255,255,255,.95));
+    position:relative;
+    z-index:1;
+  }
+
+  body[data-theme="dark"] .previewBox{
+    background: linear-gradient(180deg, rgba(15,23,42,.95), rgba(17,24,39,.95));
+  }
+
+  .previewTitle,
+  .previewText{
+    text-align:center;
+    word-break:break-word;
+  }
+
+  .styleName{
+    padding:10px 14px;
+    font-size:12px;
+    font-weight:800;
+    color:var(--muted);
+    text-align:center;
+    border-top:1px solid var(--line);
+    position:relative;
+    z-index:1;
+  }
+
+  .questionPreview{
+    border-radius:16px;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,.78);
+    backdrop-filter: blur(10px);
+    cursor:pointer;
+    user-select:none;
+    transition:.15s ease;
+    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    overflow:hidden;
+    position:relative;
+  }
+
+  body[data-theme="dark"] .questionPreview{
+    background: rgba(17,24,39,.78);
+  }
+
+  .questionPreview::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(34,211,238,.05));
+    opacity:0;
+    transition:.15s ease;
+  }
+
+  .questionPreview:hover{
+    border-color: color-mix(in oklab, var(--brandA) 32%, var(--line));
+    box-shadow: 0 18px 40px rgba(99,102,241,.12);
+    transform: translateY(-1px);
+  }
+
+  .questionPreview:hover::before{
+    opacity:1;
+  }
+
+  .qPreviewBox{
+    padding:14px;
+    background: linear-gradient(180deg, rgba(248,250,252,.95), rgba(255,255,255,.95));
+    position:relative;
+    z-index:1;
+  }
+
+  body[data-theme="dark"] .qPreviewBox{
+    background: linear-gradient(180deg, rgba(15,23,42,.95), rgba(17,24,39,.95));
+  }
+
+  .qPreviewLabel{
+    font-size:13px;
+    font-weight:800;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+
+  .qPreviewInput{
+    height:32px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,.90);
+  }
+
+  .qPreviewOption{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  .qPreviewDot{
+    width:12px;
+    height:12px;
+    border-radius:999px;
+    border:2px solid var(--muted);
+    flex-shrink:0;
+  }
+
+  .qPreviewCheck{
+    width:12px;
+    height:12px;
+    border-radius:3px;
+    border:2px solid var(--muted);
+    flex-shrink:0;
+  }
+
   .canvasWrap{
     height:100%;
     position:relative;
@@ -303,27 +454,15 @@
     margin:0 auto;
     width:794px;
     min-height:1123px;
-    border-radius:30px;
-    background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.96));
-    box-shadow: var(--shadowPaper);
-    border:1px solid rgba(15,23,42,.08);
+    border-radius:8px;
+    background:#ffffff;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    border:1px solid rgba(15,23,42,.06);
     overflow:visible;
   }
 
-  .paper::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background:
-      linear-gradient(180deg, rgba(99,102,241,.02), transparent 18%),
-      radial-gradient(400px 220px at 20% 0%, rgba(99,102,241,.05), transparent 75%);
-  }
-
   .paper.drag-over{
-    box-shadow:
-      0 0 0 4px rgba(99,102,241,.18),
-      0 32px 80px rgba(2,6,23,.18);
+    box-shadow: 0 0 0 2px #6366f1, 0 8px 24px rgba(0,0,0,.12);
   }
 
   .marginGuide{
@@ -361,28 +500,84 @@
     left:80px;
     top:120px;
     min-width:220px;
-    border-radius:20px;
-    border:1px solid rgba(15,23,42,.08);
-    background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88));
-    box-shadow: 0 14px 34px rgba(2,6,23,.08);
-    padding:14px 14px 12px;
-    cursor:default;
-    will-change: transform, left, top, width, height;
+    border-radius:8px;
+    border:1px solid transparent;
+    background:transparent;
+    box-shadow: none;
+    padding:16px;
+    cursor:move;
+    will-change: transform;
     text-align:left;
-    backdrop-filter: blur(10px);
+    /* Optimizaciones críticas de rendimiento */
+    transform: translate3d(0,0,0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    contain: layout style paint;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .block:hover{
+    border-color: rgba(99,102,241,.15);
   }
 
   body[data-theme="dark"] .block{
-    background:linear-gradient(180deg, rgba(17,24,39,.88), rgba(17,24,39,.84));
-    border-color: rgba(255,255,255,.08);
-    box-shadow: 0 18px 42px rgba(0,0,0,.30);
+    background:transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  body[data-theme="dark"] .block:hover{
+    border-color: rgba(99,102,241,.20);
   }
 
   .block.selected{
-    border-color: rgba(99,102,241,.72);
-    box-shadow:
-      0 0 0 4px rgba(99,102,241,.12),
-      0 24px 55px rgba(2,6,23,.16);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 1px rgba(99,102,241,.20);
+    background: rgba(99,102,241,.02);
+  }
+
+  .block.dragging{
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    opacity: 0.95;
+    cursor: grabbing;
+    background: rgba(255,255,255,.95);
+  }
+
+  /* Vista limpia - sin bloques visuales */
+  .block.clean-view{
+    border:1px dashed rgba(15,23,42,.12);
+    background:transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  body[data-theme="dark"] .block.clean-view{
+    background:transparent;
+    border-color: rgba(255,255,255,.12);
+    box-shadow: none;
+  }
+
+  .block.clean-view.selected{
+    border-color: rgba(99,102,241,.40);
+    box-shadow: 0 0 0 2px rgba(99,102,241,.08);
+  }
+
+  .block.clean-view .blockTopRow{
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+  }
+
+  .block.clean-view:hover .blockTopRow,
+  .block.clean-view.selected .blockTopRow{
+    opacity: 1;
+  }
+
+  .block.clean-view .fakeInput,
+  .block.clean-view .fakeSelect,
+  .block.clean-view .scale span,
+  .block.clean-view .dateBox{
+    background: rgba(248,250,252,.50);
+    border-color: rgba(15,23,42,.10);
   }
 
   .block.locked{
@@ -390,20 +585,11 @@
   }
 
   .blockTopRow{
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:10px;
-    margin-bottom:10px;
-    user-select:none;
+    display:none;
   }
 
   .handleDot{
-    width:38px;
-    height:10px;
-    border-radius:999px;
-    background: linear-gradient(90deg, rgba(99,102,241,.24), rgba(34,211,238,.22));
-    opacity:.9;
+    display:none;
   }
 
   .editable:focus{
@@ -579,40 +765,68 @@
 
   .resizer{
     position:absolute;
-    right:10px;
-    bottom:10px;
-    width:16px;
-    height:16px;
-    border-radius:7px;
-    background: rgba(99,102,241,.30);
-    border:1px solid rgba(99,102,241,.85);
+    right:0;
+    bottom:0;
+    width:20px;
+    height:20px;
+    background: transparent;
+    border:none;
     cursor:nwse-resize;
+    opacity:0;
+    transition: opacity 0.15s ease;
+  }
+
+  .resizer::before{
+    content: '';
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid #6366f1;
+    border-bottom: 2px solid #6366f1;
+    border-bottom-right-radius: 2px;
+  }
+
+  .resizer::after{
+    content: '';
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid #6366f1;
+    border-bottom: 2px solid #6366f1;
+    opacity: 0.5;
+  }
+
+  .block:hover .resizer,
+  .block.selected .resizer{
+    opacity:1;
   }
 
   .rightPanel{
     border-left:1px solid var(--line);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.66)),
-      linear-gradient(180deg, rgba(99,102,241,.04), rgba(34,211,238,.03));
-    backdrop-filter: blur(16px);
+    background:#fafafa;
     padding:16px;
     overflow:auto;
   }
 
   body[data-theme="dark"] .rightPanel{
-    background:
-      linear-gradient(180deg, rgba(17,24,39,.92), rgba(17,24,39,.82)),
-      linear-gradient(180deg, rgba(99,102,241,.06), rgba(34,211,238,.04));
+    background:#0f172a;
   }
 
   .propHead{
     border:1px solid var(--line);
-    border-radius:22px;
-    background: var(--glass);
-    backdrop-filter: blur(12px);
+    border-radius:12px;
+    background: #ffffff;
     padding:16px;
-    box-shadow: var(--shadowSoft);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
     margin-bottom:14px;
+  }
+
+  body[data-theme="dark"] .propHead{
+    background: #1e293b;
   }
 
   .propTitle{
@@ -631,11 +845,14 @@
 
   .propCard{
     border:1px solid var(--line);
-    border-radius:22px;
-    background: var(--card);
-    backdrop-filter: blur(12px);
+    border-radius:12px;
+    background: #ffffff;
     padding:14px;
-    box-shadow: var(--shadowSoft);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+
+  body[data-theme="dark"] .propCard{
+    background: #1e293b;
   }
 
   .field{
@@ -887,26 +1104,48 @@
 
     <div id="tab_text" class="tab">
       <div class="toolGrid">
-        <div class="toolCard tool" draggable="true" data-type="title">
-          <div>
-            <div class="tName">Título</div>
-            <div class="tHint">Texto principal</div>
+        <!-- Estilos de título predefinidos -->
+        <div class="stylePreview" data-style="title-bold">
+          <div class="previewBox">
+            <div class="previewTitle" style="font-weight:900;font-size:32px;color:#0f172a;">Título Principal</div>
           </div>
-          <span class="pill">Text</span>
+          <div class="styleName">Título Bold</div>
         </div>
 
-        <div class="toolCard tool" draggable="true" data-type="text">
-          <div>
-            <div class="tName">Párrafo</div>
-            <div class="tHint">Descripción o apoyo</div>
+        <div class="stylePreview" data-style="title-elegant">
+          <div class="previewBox">
+            <div class="previewTitle" style="font-family:Georgia,serif;font-size:28px;color:#1e293b;">Título Elegante</div>
           </div>
-          <span class="pill">Text</span>
+          <div class="styleName">Título Serif</div>
         </div>
 
+        <div class="stylePreview" data-style="subtitle">
+          <div class="previewBox">
+            <div class="previewTitle" style="font-weight:600;font-size:20px;color:#475569;">Subtítulo</div>
+          </div>
+          <div class="styleName">Subtítulo</div>
+        </div>
+
+        <!-- Estilos de párrafo -->
+        <div class="stylePreview" data-style="text-normal">
+          <div class="previewBox">
+            <div class="previewText" style="font-size:14px;line-height:1.6;color:#64748b;">Este es un párrafo de texto normal para describir o explicar algo.</div>
+          </div>
+          <div class="styleName">Texto Normal</div>
+        </div>
+
+        <div class="stylePreview" data-style="text-small">
+          <div class="previewBox">
+            <div class="previewText" style="font-size:12px;line-height:1.5;color:#94a3b8;">Texto pequeño para notas o aclaraciones adicionales.</div>
+          </div>
+          <div class="styleName">Texto Pequeño</div>
+        </div>
+
+        <!-- Separador -->
         <div class="toolCard tool" draggable="true" data-type="divider">
           <div>
             <div class="tName">Separador</div>
-            <div class="tHint">Ordena secciones</div>
+            <div class="tHint">Divide secciones</div>
           </div>
           <span class="pill">UI</span>
         </div>
@@ -915,69 +1154,145 @@
 
     <div id="tab_questions" class="tab" style="display:none;">
       <div class="toolGrid">
-        <div class="toolCard tool" draggable="true" data-type="q_text">
-          <div>
-            <div class="tName">Pregunta de texto</div>
-            <div class="tHint">Respuesta abierta</div>
+        <!-- Pregunta Sí/No -->
+        <div class="questionPreview tool" draggable="true" data-type="q_yesno">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">¿Estás de acuerdo?</div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.04));">Sí</div>
+              <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.04));">No</div>
+            </div>
           </div>
-          <span class="pill">Input</span>
+          <div class="styleName">Sí / No</div>
         </div>
 
-        <div class="toolCard tool" draggable="true" data-type="q_radio">
-          <div>
-            <div class="tName">Opción múltiple</div>
-            <div class="tHint">Solo una respuesta</div>
+        <!-- Calificación con Estrellas -->
+        <div class="questionPreview tool" draggable="true" data-type="q_stars">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Califica tu experiencia</div>
+            <div style="display:flex;gap:6px;margin-top:10px;justify-content:center;">
+              <svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:24px;height:24px;fill:#e5e7eb;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:24px;height:24px;fill:#e5e7eb;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
           </div>
-          <span class="pill">Radio</span>
+          <div class="styleName">Estrellas</div>
         </div>
 
-        <div class="toolCard tool" draggable="true" data-type="q_check">
-          <div>
-            <div class="tName">Checkbox múltiple</div>
-            <div class="tHint">Varias respuestas</div>
+        <!-- Escala Numérica Personalizable -->
+        <div class="questionPreview tool" draggable="true" data-type="q_numeric">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Del 1 al 10</div>
+            <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;">
+              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">1</div>
+              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">2</div>
+              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">3</div>
+              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">...</div>
+              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">10</div>
+            </div>
           </div>
-          <span class="pill">Multi</span>
+          <div class="styleName">Escala 1-10</div>
         </div>
 
-        <div class="toolCard tool" draggable="true" data-type="q_select">
-          <div>
-            <div class="tName">Combo box</div>
-            <div class="tHint">Ideal para muchas opciones</div>
+        <div class="questionPreview tool" draggable="true" data-type="q_text">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">¿Cuál es tu nombre?</div>
+            <div class="qPreviewInput"></div>
           </div>
-          <span class="pill">Select</span>
+          <div class="styleName">Respuesta corta</div>
         </div>
 
-        <div class="toolCard tool" draggable="true" data-type="q_scale">
-          <div>
-            <div class="tName">Escala 1–5</div>
-            <div class="tHint">Nivel o calificación</div>
+        <div class="questionPreview tool" draggable="true" data-type="q_radio">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Selecciona una opción</div>
+            <div class="qPreviewOption">
+              <div class="qPreviewDot"></div>
+              <span>Opción 1</span>
+            </div>
+            <div class="qPreviewOption">
+              <div class="qPreviewDot"></div>
+              <span>Opción 2</span>
+            </div>
+            <div class="qPreviewOption">
+              <div class="qPreviewDot"></div>
+              <span>Opción 3</span>
+            </div>
           </div>
-          <span class="pill">Scale</span>
+          <div class="styleName">Opción múltiple</div>
         </div>
 
-        <div class="toolCard tool" draggable="true" data-type="q_date">
-          <div>
-            <div class="tName">Fecha</div>
-            <div class="tHint">Día / Mes / Año</div>
+        <div class="questionPreview tool" draggable="true" data-type="q_check">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Selecciona varias</div>
+            <div class="qPreviewOption">
+              <div class="qPreviewCheck"></div>
+              <span>Opción A</span>
+            </div>
+            <div class="qPreviewOption">
+              <div class="qPreviewCheck"></div>
+              <span>Opción B</span>
+            </div>
+            <div class="qPreviewOption">
+              <div class="qPreviewCheck"></div>
+              <span>Opción C</span>
+            </div>
           </div>
-          <span class="pill">Date</span>
+          <div class="styleName">Casillas múltiples</div>
+        </div>
+
+        <div class="questionPreview tool" draggable="true" data-type="q_select">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Elige del menú</div>
+            <div class="qPreviewInput" style="padding:8px 10px;font-size:12px;color:var(--muted);">Selecciona...</div>
+          </div>
+          <div class="styleName">Lista desplegable</div>
+        </div>
+
+        <div class="questionPreview tool" draggable="true" data-type="q_scale">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Califica del 1 al 5</div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">1</div>
+              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">2</div>
+              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">3</div>
+              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">4</div>
+              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">5</div>
+            </div>
+          </div>
+          <div class="styleName">Escala 1-5</div>
+        </div>
+
+        <div class="questionPreview tool" draggable="true" data-type="q_date">
+          <div class="qPreviewBox">
+            <div class="qPreviewLabel">Selecciona una fecha</div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <div style="flex:1;height:32px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--muted);">DD</div>
+              <div style="flex:1;height:32px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--muted);">MM</div>
+              <div style="flex:1;height:32px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--muted);">AAAA</div>
+            </div>
+          </div>
+          <div class="styleName">Fecha</div>
         </div>
       </div>
     </div>
 
     <div id="tab_media" class="tab" style="display:none;">
       <div class="toolGrid">
-        <div class="toolCard tool" draggable="true" data-type="img">
-          <div>
-            <div class="tName">Imagen</div>
-            <div class="tHint">Sube una imagen al bloque</div>
+        <div class="questionPreview tool" draggable="true" data-type="img">
+          <div class="qPreviewBox" style="min-height:120px;display:grid;place-items:center;">
+            <div style="text-align:center;">
+              <div style="width:48px;height:48px;margin:0 auto 8px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,.14),rgba(34,211,238,.10));display:grid;place-items:center;font-size:24px;">🖼️</div>
+              <div style="font-size:12px;color:var(--muted);font-weight:800;">Arrastra para agregar</div>
+            </div>
           </div>
-          <span class="pill">Media</span>
+          <div class="styleName">Imagen</div>
         </div>
       </div>
 
       <p class="panelSub" style="margin-top:14px;">
-        Tip: arrastra el bloque de imagen al canvas y después da click para elegir el archivo.
+        Arrastra el bloque al canvas y haz clic para seleccionar una imagen de tu computadora.
       </p>
     </div>
 
@@ -1087,6 +1402,17 @@
         <textarea class="textarea" id="propOptions" placeholder="Opción 1&#10;Opción 2&#10;Opción 3"></textarea>
       </div>
     </div>
+
+    <div class="propCard" style="margin-top:14px;">
+      <div class="field">
+        <label>Modo de vista</label>
+        <div class="seg" id="viewModeToggle">
+          <button type="button" data-mode="block" class="active">Con bloques</button>
+          <button type="button" data-mode="clean">Vista limpia</button>
+        </div>
+        <div class="mini" style="margin-top:8px;">Cambia entre vista con bloques o solo texto natural.</div>
+      </div>
+    </div>
   </aside>
 </div>
 
@@ -1151,6 +1477,124 @@
         propAlphaVal.textContent = `${propAlpha.value}%`;
       });
     }
+
+    // Toggle de modo de vista (bloques vs limpio)
+    const viewModeToggle = document.getElementById('viewModeToggle');
+    const paper = document.getElementById('paper');
+    
+    if (viewModeToggle && paper) {
+      // Cargar preferencia guardada
+      const savedMode = localStorage.getItem('builderViewMode') || 'block';
+      
+      if (savedMode === 'clean') {
+        paper.classList.add('clean-mode');
+        document.querySelectorAll('.block').forEach(block => {
+          block.classList.add('clean-view');
+        });
+        viewModeToggle.querySelector('[data-mode="clean"]').classList.add('active');
+        viewModeToggle.querySelector('[data-mode="block"]').classList.remove('active');
+      }
+
+      viewModeToggle.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        const mode = btn.dataset.mode;
+        
+        // Actualizar botones activos
+        viewModeToggle.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b === btn);
+        });
+
+        // Aplicar o quitar clase clean-view a todos los bloques
+        const allBlocks = paper.querySelectorAll('.block');
+        
+        if (mode === 'clean') {
+          paper.classList.add('clean-mode');
+          allBlocks.forEach(block => {
+            block.classList.add('clean-view');
+          });
+        } else {
+          paper.classList.remove('clean-mode');
+          allBlocks.forEach(block => {
+            block.classList.remove('clean-view');
+          });
+        }
+
+        // Guardar preferencia
+        localStorage.setItem('builderViewMode', mode);
+      });
+
+      // Observar nuevos bloques agregados
+      const observer = new MutationObserver((mutations) => {
+        const currentMode = localStorage.getItem('builderViewMode') || 'block';
+        if (currentMode === 'clean') {
+          mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+              if (node.classList && node.classList.contains('block')) {
+                node.classList.add('clean-view');
+              }
+            });
+          });
+        }
+      });
+
+      observer.observe(paper, { childList: true });
+    }
+
+    // Manejar clics en previsualizaciones de estilos
+    document.querySelectorAll('.stylePreview').forEach((preview) => {
+      preview.addEventListener('click', async () => {
+        const style = preview.dataset.style;
+        const paper = document.getElementById('paper');
+        if (!paper) return;
+
+        let blockType = 'title';
+        let props = {};
+
+        // Mapear estilos a configuraciones
+        if (style === 'title-bold') {
+          blockType = 'title';
+          props = { html: 'Título Principal', fontSize: 32, color: '#0f172a', font: 'system' };
+        } else if (style === 'title-elegant') {
+          blockType = 'title';
+          props = { html: 'Título Elegante', fontSize: 28, color: '#1e293b', font: 'merriweather' };
+        } else if (style === 'subtitle') {
+          blockType = 'title';
+          props = { html: 'Subtítulo', fontSize: 20, color: '#475569', font: 'system' };
+        } else if (style === 'text-normal') {
+          blockType = 'text';
+          props = { html: 'Este es un párrafo de texto normal para describir o explicar algo.', fontSize: 14, color: '#64748b' };
+        } else if (style === 'text-small') {
+          blockType = 'text';
+          props = { html: 'Texto pequeño para notas o aclaraciones adicionales.', fontSize: 12, color: '#94a3b8' };
+        }
+
+        // Crear el bloque usando el sistema existente
+        const event = new DragEvent('drop', {
+          clientX: paper.offsetLeft + paper.offsetWidth / 2,
+          clientY: paper.offsetTop + 150,
+          dataTransfer: new DataTransfer()
+        });
+        
+        event.dataTransfer.setData('application/x-builder-block', blockType);
+        paper.dispatchEvent(event);
+
+        // Esperar un momento y aplicar los props personalizados
+        setTimeout(() => {
+          const blocks = paper.querySelectorAll('.block');
+          const lastBlock = blocks[blocks.length - 1];
+          if (lastBlock) {
+            const blockId = lastBlock.dataset.id;
+            if (window.updateBlock) {
+              window.updateBlock(blockId, { props });
+              if (window.renderCanvas) window.renderCanvas();
+              if (window.selectBlockById) window.selectBlockById(blockId);
+            }
+          }
+        }, 100);
+      });
+    });
   });
 </script>
 @endsection

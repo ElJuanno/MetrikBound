@@ -457,42 +457,71 @@ function bindBlockInteractions() {
   let startTop = 0;
   let startWidth = 0;
   let startHeight = 0;
+  let rafId = null;
+  let currentX = 0;
+  let currentY = 0;
 
   function onMove(e) {
     if (!activeId || !mode) return;
 
-    const block = getBlockById(activeId);
-    const blockEl = dom.paper.querySelector(`.block[data-id="${activeId}"]`);
-    if (!block || !blockEl) return;
+    // Guardar posición del mouse
+    currentX = e.clientX;
+    currentY = e.clientY;
 
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-
-    if (mode === 'move') {
-      const paperRect = dom.paper.getBoundingClientRect();
-      const blockW = blockEl.offsetWidth || block.w || 260;
-      const blockH = blockEl.offsetHeight || block.h || 100;
-
-      const newX = clamp(startLeft + dx, 0, Math.max(0, paperRect.width - blockW));
-      const newY = clamp(startTop + dy, 0, Math.max(0, paperRect.height - blockH));
-
-      updateBlock(activeId, { x: newX, y: newY });
-      blockEl.style.left = `${newX}px`;
-      blockEl.style.top = `${newY}px`;
+    // Cancelar frame anterior si existe
+    if (rafId) {
+      cancelAnimationFrame(rafId);
     }
 
-    if (mode === 'resize') {
-      const newW = Math.max(220, startWidth + dx);
-      const newH = block.kind === 'divider' ? null : Math.max(70, startHeight + dy);
+    // Usar requestAnimationFrame para sincronizar con el refresh rate
+    rafId = requestAnimationFrame(() => {
+      const block = getBlockById(activeId);
+      const blockEl = dom.paper.querySelector(`.block[data-id="${activeId}"]`);
+      if (!block || !blockEl) return;
 
-      updateBlock(activeId, { w: newW, h: newH });
-      blockEl.style.width = `${newW}px`;
-      blockEl.style.height = newH ? `${newH}px` : 'auto';
-    }
+      const dx = currentX - startX;
+      const dy = currentY - startY;
+
+      if (mode === 'move') {
+        const paperRect = dom.paper.getBoundingClientRect();
+        const blockW = blockEl.offsetWidth || block.w || 260;
+        const blockH = blockEl.offsetHeight || block.h || 100;
+
+        const newX = clamp(startLeft + dx, 0, Math.max(0, paperRect.width - blockW));
+        const newY = clamp(startTop + dy, 0, Math.max(0, paperRect.height - blockH));
+
+        // Aplicar directamente sin transform
+        blockEl.style.left = `${newX}px`;
+        blockEl.style.top = `${newY}px`;
+        blockEl.classList.add('dragging');
+        
+        // Actualizar el modelo inmediatamente
+        updateBlock(activeId, { x: newX, y: newY });
+      }
+
+      if (mode === 'resize') {
+        const newW = Math.max(220, startWidth + dx);
+        const newH = block.kind === 'divider' ? null : Math.max(70, startHeight + dy);
+
+        updateBlock(activeId, { w: newW, h: newH });
+        blockEl.style.width = `${newW}px`;
+        blockEl.style.height = newH ? `${newH}px` : 'auto';
+      }
+    });
   }
 
   function onUp() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
     if (activeId) {
+      const blockEl = dom.paper.querySelector(`.block[data-id="${activeId}"]`);
+      if (blockEl && mode === 'move') {
+        blockEl.classList.remove('dragging');
+      }
+      
       persistBlockDebounced(activeId, 250);
       autosaveDebounced();
     }
@@ -722,6 +751,14 @@ function init() {
 
   renderCanvas();
   setCloud('saved');
+
+  // Exponer funciones globalmente para el código de estilos
+  window.updateBlock = updateBlock;
+  window.renderCanvas = renderCanvas;
+  window.selectBlockById = selectBlockById;
+  window.addBlockToStore = addBlockToStore;
+  window.createBlockModel = createBlockModel;
+  window.createBlockInDatabase = createBlockInDatabase;
 }
 
 document.addEventListener('DOMContentLoaded', init);

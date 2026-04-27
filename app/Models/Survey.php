@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Survey extends Model
 {
@@ -26,6 +27,29 @@ class Survey extends Model
         'builder_state' => 'array',
         'settings_json' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($survey) {
+            if (empty($survey->share_token)) {
+                $survey->share_token = Str::uuid()->toString();
+            }
+        });
+    }
+
+    public function regenerateShareToken()
+    {
+        $this->share_token = Str::uuid()->toString();
+        $this->save();
+        return $this->share_token;
+    }
+
+    public function getPublicUrl()
+    {
+        return route('surveys.public.show', $this->share_token);
+    }
 
     public function blocks()
     {

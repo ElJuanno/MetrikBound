@@ -13,6 +13,29 @@ class BuilderController extends Controller
 {
 public function edit(Survey $survey)
 {
+    // Generar token si no existe
+    if (empty($survey->share_token)) {
+        $survey->share_token = \Illuminate\Support\Str::uuid()->toString();
+        $survey->save();
+    }
+
+    // Priorizar builder_state si existe y tiene bloques
+    $savedState = is_array($survey->builder_state) 
+        ? $survey->builder_state 
+        : json_decode($survey->builder_state ?? '{}', true);
+
+    if (!empty($savedState['blocks'])) {
+        // Usar el estado guardado directamente
+        $builderState = [
+            'v' => $savedState['v'] ?? 2,
+            'page' => $savedState['page'] ?? null,
+            'blocks' => $savedState['blocks'],
+        ];
+
+        return view('builder.edit', compact('survey', 'builderState'));
+    }
+
+    // Si no hay builder_state, cargar desde bloques individuales
     $survey->load([
         'blocks.question.options',
     ]);
@@ -27,10 +50,12 @@ public function edit(Survey $survey)
                 $block->question?->type
             );
 
-            $html = $props['text']
+            // Priorizar el texto guardado en props_json
+            $html = $props['text'] 
                 ?? $props['label']
+                ?? $props['html']
                 ?? $block->question?->title
-                ?? 'Bloque';
+                ?? $this->getDefaultText($kind);
 
             $options = $props['options']
                 ?? ($block->question
@@ -54,16 +79,19 @@ public function edit(Survey $survey)
                 'z' => (int) ($block->position ?? 1),
                 'props' => [
                     'html' => $html,
-                    'align' => $props['textAlign'] ?? 'left',
+                    'align' => $props['textAlign'] ?? $props['align'] ?? 'left',
                     'required' => (bool) ($props['required'] ?? $block->question?->is_required ?? false),
                     'options' => $options,
                     'font' => $props['font'] ?? 'system',
                     'fontSize' => (int) ($props['fontSize'] ?? 14),
                     'color' => $props['color'] ?? '',
-                    'bg' => $props['backgroundColor'] ?? '',
+                    'bg' => $props['backgroundColor'] ?? $props['bg'] ?? '',
                     'alpha' => (int) ($props['alpha'] ?? 100),
-                    'optColor' => $props['optionColor'] ?? '',
-                    'img' => $props['src'] ?? null,
+                    'optColor' => $props['optionColor'] ?? $props['optColor'] ?? '',
+                    'img' => $props['src'] ?? $props['img'] ?? null,
+                    'min' => (int) ($props['min'] ?? 1),
+                    'max' => (int) ($props['max'] ?? ($kind === 'q_numeric' ? 10 : 5)),
+                    'stars' => (int) ($props['stars'] ?? 5),
                 ],
             ];
         })
@@ -77,6 +105,24 @@ public function edit(Survey $survey)
     ];
 
     return view('builder.edit', compact('survey', 'builderState'));
+}
+
+private function getDefaultText($kind): string
+{
+    return match ($kind) {
+        'title' => 'Título',
+        'text' => 'Texto',
+        'q_text' => 'Pregunta',
+        'q_radio' => 'Pregunta de opción múltiple',
+        'q_check' => 'Pregunta de checkbox',
+        'q_select' => 'Pregunta de selección',
+        'q_scale' => 'Escala 1-5',
+        'q_date' => 'Fecha',
+        'q_yesno' => '¿Estás de acuerdo?',
+        'q_stars' => 'Califica tu experiencia',
+        'q_numeric' => 'Del 1 al 10',
+        default => 'Bloque',
+    };
 }
 private function mapDbTypeToBuilderKind(?string $blockType, ?string $questionType = null): string
 {

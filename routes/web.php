@@ -48,9 +48,16 @@ Route::put('/builder/{survey}/blocks/{block}', [BuilderController::class, 'updat
 Route::delete('/builder/{survey}/blocks/{block}', [BuilderController::class, 'deleteBlock'])->name('builder.blocks.delete');
     // Extra pages (si solo son vistas)
     Route::view('/templates', 'templates.index')->name('templates.index');
-    Route::view('/results', 'results.index')->name('results.index');
+    
+    // Results (Controller)
+    Route::get('/results', [App\Http\Controllers\ResultsController::class, 'index'])->name('results.index');
+    Route::get('/results/{survey}', [App\Http\Controllers\ResultsController::class, 'show'])->name('results.show');
 });
 use App\Http\Controllers\PublicSurveyController;
+
+// Google OAuth
+Route::get('/auth/google', [App\Http\Controllers\Auth\GoogleAuthController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [App\Http\Controllers\Auth\GoogleAuthController::class, 'callback']);
 
 Route::get('/s/{token}', [PublicSurveyController::class, 'show'])
     ->name('surveys.public.show');

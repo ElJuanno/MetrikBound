@@ -14,12 +14,7 @@ class Answer extends Model
     protected $fillable = [
         'response_id',
         'question_id',
-        'value_text',
-        'value_json',
-    ];
-
-    protected $casts = [
-        'value_json' => 'array',
+        'value',
     ];
 
     public function response()

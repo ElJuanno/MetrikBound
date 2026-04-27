@@ -7,123 +7,160 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-[#f6f7fb] text-slate-900 antialiased">
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
 
-    <div class="min-h-screen lg:grid lg:grid-cols-[270px_minmax(0,1fr)]">
+    <div class="min-h-screen lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
 
-        {{-- SIDEBAR --}}
-        <aside class="hidden lg:flex lg:min-h-screen lg:flex-col bg-[#0f172a] text-white">
+        {{-- SIDEBAR REDISEÑADO --}}
+        <aside class="hidden lg:flex lg:min-h-screen lg:flex-col bg-slate-900 text-white">
+            {{-- Logo --}}
             <div class="flex items-center gap-3 px-6 py-6 border-b border-white/10">
-                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-bold shadow-lg">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 text-base font-bold shadow-lg ring-2 ring-white/10">
                     M
                 </div>
                 <div>
-                    <div class="text-base font-semibold tracking-tight">MetrikBound</div>
-                    <div class="text-xs text-slate-400">encuestas visuales</div>
+                    <div class="text-base font-bold tracking-tight">MetrikBound</div>
+                    <div class="text-xs text-slate-400">Encuestas visuales</div>
                 </div>
             </div>
 
-            <div class="px-4 py-5">
-                <div class="rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-500 p-5 shadow-[0_20px_40px_rgba(99,102,241,.30)]">
-                    <div class="text-[11px] uppercase tracking-[.2em] text-white/70 font-semibold">
-                        Espacio de trabajo
+            {{-- CTA Card --}}
+            <div class="px-5 py-6">
+                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-600 p-5 shadow-xl">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,.15),transparent_50%)]"></div>
+                    
+                    <div class="relative">
+                        <div class="text-[10px] uppercase tracking-[.2em] text-white/70 font-bold">
+                            Workspace
+                        </div>
+                        <div class="mt-2 text-lg font-bold">Panel Principal</div>
+                        <div class="mt-1 text-sm text-white/90 leading-relaxed">
+                            Crea y analiza mejor
+                        </div>
+                        <a href="{{ route('surveys.create') }}"
+                           class="mt-4 flex items-center justify-center gap-2 rounded-xl bg-white/20 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98]">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Nueva encuesta
+                        </a>
                     </div>
-                    <div class="mt-2 text-xl font-bold">Panel principal</div>
-                    <div class="mt-1 text-sm text-white/80">
-                        Crea, comparte y analiza mejor.
-                    </div>
-                    <a href="{{ route('surveys.create') }}"
-                       class="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-white/15 px-4 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20">
-                        + Nueva encuesta
-                    </a>
                 </div>
             </div>
 
-            @php
-                $base = 'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition';
-                $active = 'bg-white/10 text-white';
-                $normal = 'text-slate-300 hover:bg-white/5 hover:text-white';
-            @endphp
-
-            <nav class="px-4 space-y-2">
-                <a href="{{ route('dashboard') }}" class="{{ $base }} {{ request()->routeIs('dashboard') ? $active : $normal }}">
-                    <span class="inline-block h-2.5 w-2.5 rounded-full bg-indigo-400"></span>
-                    Dashboard
+            {{-- Navigation --}}
+            <nav class="flex-1 px-4 space-y-1">
+                <a href="{{ route('dashboard') }}" class="group {{ request()->routeIs('dashboard') ? 'nav-link-active' : 'nav-link-inactive' }}">
+                    <span class="nav-icon bg-indigo-400 group-hover:scale-125"></span>
+                    <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('surveys.index') }}" class="{{ $base }} {{ request()->routeIs('surveys.*') ? $active : $normal }}">
-                    <span class="inline-block h-2.5 w-2.5 rounded-full bg-cyan-400"></span>
-                    Encuestas
+                <a href="{{ route('surveys.index') }}" class="group {{ request()->routeIs('surveys.*') ? 'nav-link-active' : 'nav-link-inactive' }}">
+                    <span class="nav-icon bg-cyan-400 group-hover:scale-125"></span>
+                    <span>Encuestas</span>
                 </a>
 
-                <a href="{{ route('templates.index') }}" class="{{ $base }} {{ request()->routeIs('templates.*') ? $active : $normal }}">
-                    <span class="inline-block h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                    Plantillas
+                <a href="{{ route('templates.index') }}" class="group {{ request()->routeIs('templates.*') ? 'nav-link-active' : 'nav-link-inactive' }}">
+                    <span class="nav-icon bg-emerald-400 group-hover:scale-125"></span>
+                    <span>Plantillas</span>
                 </a>
 
-                <a href="{{ route('results.index') }}" class="{{ $base }} {{ request()->routeIs('results.*') ? $active : $normal }}">
-                    <span class="inline-block h-2.5 w-2.5 rounded-full bg-pink-400"></span>
-                    Resultados
+                <a href="{{ route('results.index') }}" class="group {{ request()->routeIs('results.*') ? 'nav-link-active' : 'nav-link-inactive' }}">
+                    <span class="nav-icon bg-pink-400 group-hover:scale-125"></span>
+                    <span>Resultados</span>
                 </a>
             </nav>
 
-            <div class="mt-auto px-4 py-6">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div class="text-xs uppercase tracking-[.18em] text-slate-400">Plan actual</div>
-                    <div class="mt-2 text-lg font-semibold capitalize">{{ auth()->user()->plan ?? 'free' }}</div>
-                    <div class="mt-1 text-sm text-slate-400">Listo para crear encuestas.</div>
+            {{-- User Card --}}
+            <div class="px-5 py-6 border-t border-white/10">
+                <div class="rounded-xl bg-white/5 p-4 backdrop-blur-sm border border-white/10">
+                    <div class="text-[10px] uppercase tracking-[.2em] text-slate-400 font-bold">Plan Actual</div>
+                    <div class="mt-2 text-lg font-bold capitalize">{{ auth()->user()->plan ?? 'free' }}</div>
+                    <div class="mt-1 text-sm text-slate-400">Listo para crear</div>
+                    
+                    @if((auth()->user()->plan ?? 'free') === 'free')
+                        <button class="mt-3 w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                            Mejorar plan
+                        </button>
+                    @endif
                 </div>
             </div>
         </aside>
 
-        {{-- MAIN --}}
-        <div class="min-w-0">
-            {{-- TOPBAR --}}
-            <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
-                <div class="flex items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
+        {{-- MAIN CONTENT --}}
+        <div class="min-w-0 flex flex-col min-h-screen">
+            {{-- TOPBAR REDISEÑADO --}}
+            <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-xl">
+                <div class="flex items-center justify-between px-6 py-4 lg:px-8">
+                    {{-- Mobile Logo --}}
                     <div class="flex items-center gap-3 lg:hidden">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-bold text-white">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-bold text-white">
                             M
                         </div>
                         <div>
-                            <div class="text-sm font-semibold">MetrikBound</div>
-                            <div class="text-xs text-slate-500">encuestas visuales</div>
+                            <div class="text-sm font-bold">MetrikBound</div>
+                            <div class="text-xs text-slate-500">Encuestas</div>
                         </div>
                     </div>
 
+                    {{-- Page Title --}}
                     <div class="hidden lg:block">
-                        <h1 class="text-sm font-semibold text-slate-500">@yield('title', 'Dashboard')</h1>
+                        <h1 class="text-sm font-semibold text-slate-600">@yield('title', 'Dashboard')</h1>
                     </div>
 
+                    {{-- User Actions --}}
                     <div class="flex items-center gap-3">
-                        <div class="hidden sm:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-50 to-violet-50 text-xs font-bold text-indigo-600">
-                                {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
+                        @auth
+                        {{-- User Info --}}
+                        <div class="hidden sm:flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-violet-100 text-xs font-bold text-indigo-700">
+                                {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email ?? 'U', 0, 1)) }}
                             </div>
                             <div class="leading-tight">
-                                <div class="max-w-[180px] truncate text-sm font-semibold text-slate-900">
+                                <div class="max-w-[160px] truncate text-sm font-semibold text-slate-900">
                                     {{ auth()->user()->name ?? 'Usuario' }}
                                 </div>
                                 <div class="text-xs text-slate-500 capitalize">
-                                    Plan {{ auth()->user()->plan ?? 'free' }}
+                                    {{ auth()->user()->plan ?? 'free' }}
                                 </div>
                             </div>
                         </div>
+                        @endauth
 
+                        @auth
+                        {{-- Logout --}}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit"
-                                    class="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+                            <button type="submit" class="btn-secondary">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
                                 Salir
                             </button>
                         </form>
+                        @endauth
                     </div>
                 </div>
             </header>
 
-            <main class="px-5 py-6 sm:px-6 lg:px-8 lg:py-8">
+            {{-- MAIN CONTENT AREA --}}
+            <main class="flex-1 px-6 py-8 lg:px-8 animate-fade-in">
                 @yield('content')
             </main>
+
+            {{-- FOOTER --}}
+            <footer class="border-t border-slate-200 bg-white px-6 py-6 lg:px-8">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="text-sm text-slate-500">
+                        © {{ date('Y') }} MetrikBound. Encuestas visuales modernas.
+                    </div>
+                    <div class="flex gap-6 text-sm">
+                        <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors">Ayuda</a>
+                        <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors">Términos</a>
+                        <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors">Privacidad</a>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 

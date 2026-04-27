@@ -3,255 +3,238 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-8">
 
-    {{-- HERO --}}
-    <section class="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-6 py-7 text-white shadow-[0_25px_60px_rgba(15,23,42,.20)] sm:px-8 sm:py-8">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,.35),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,.22),transparent_24%)]"></div>
+    {{-- HERO SECTION REDISEÑADO --}}
+    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 p-8 text-white shadow-xl">
+        {{-- Decoración de fondo --}}
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,.25),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,.15),transparent_35%)]"></div>
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
 
-        <div class="relative flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
-            <div class="max-w-3xl">
-                <span class="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[.18em] text-indigo-200">
+        <div class="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div class="max-w-2xl">
+                <span class="badge inline-flex items-center gap-1.5 bg-white/10 text-white backdrop-blur-sm">
+                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                    </svg>
                     Dashboard
                 </span>
 
-                <h2 class="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+                <h1 class="mt-4 text-4xl font-bold leading-tight tracking-tight lg:text-5xl">
                     Bienvenido a tu espacio de
-                    <span class="bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">
-                        encuestas visuales
-                    </span>
-                </h2>
+                    <span class="text-gradient-primary block mt-1">encuestas visuales</span>
+                </h1>
 
-                <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                    Diseña formularios, comparte enlaces y revisa resultados desde un panel más limpio,
-                    moderno y pensado para verse realmente bien.
+                <p class="mt-4 max-w-xl text-base leading-relaxed text-slate-300">
+                    Diseña formularios profesionales, comparte enlaces y analiza resultados desde un panel moderno y fácil de usar.
                 </p>
 
-                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <a href="{{ route('surveys.create') }}"
-                       class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100">
-                        + Nueva encuesta
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="{{ route('surveys.create') }}" class="btn-primary">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Nueva encuesta
                     </a>
 
-                    <a href="{{ route('surveys.index') }}"
-                       class="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15">
+                    <a href="{{ route('surveys.index') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/20 active:scale-[0.98]">
                         Ver mis encuestas
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </a>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:w-[440px]">
-                <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
-                    <div class="text-[11px] uppercase tracking-[.18em] text-slate-300 font-semibold">Encuestas</div>
+            {{-- Stats Cards --}}
+            <div class="grid grid-cols-3 gap-3 lg:w-auto">
+                <div class="rounded-xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition-all duration-200 hover:bg-white/15">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Encuestas</div>
                     <div class="mt-2 text-3xl font-bold">{{ $surveysCount }}</div>
-                    <div class="mt-1 text-sm text-slate-300">Creadas</div>
+                    <div class="mt-1 text-xs text-slate-400">Creadas</div>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
-                    <div class="text-[11px] uppercase tracking-[.18em] text-slate-300 font-semibold">Respuestas</div>
+                <div class="rounded-xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition-all duration-200 hover:bg-white/15">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Respuestas</div>
                     <div class="mt-2 text-3xl font-bold">{{ $responsesCount }}</div>
-                    <div class="mt-1 text-sm text-slate-300">Totales</div>
+                    <div class="mt-1 text-xs text-slate-400">Totales</div>
                 </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
-                    <div class="text-[11px] uppercase tracking-[.18em] text-slate-300 font-semibold">Plan</div>
-                    <div class="mt-2 text-3xl font-bold capitalize">{{ auth()->user()->plan ?? 'free' }}</div>
-                    <div class="mt-1 text-sm text-slate-300">Actual</div>
+                <div class="rounded-xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition-all duration-200 hover:bg-white/15">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Plan</div>
+                    <div class="mt-2 text-2xl font-bold capitalize">{{ auth()->user()->plan ?? 'free' }}</div>
+                    <div class="mt-1 text-xs text-slate-400">Actual</div>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- GRID PRINCIPAL --}}
-    <section class="grid grid-cols-1 gap-6 xl:grid-cols-[1.2fr_.8fr]">
+    {{-- MAIN GRID --}}
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
-        {{-- IZQUIERDA --}}
-        <div class="space-y-6">
-            <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-                <div class="flex items-center justify-between gap-4">
+        {{-- COLUMNA PRINCIPAL (2/3) --}}
+        <div class="lg:col-span-2 space-y-6">
+            {{-- Encuestas Recientes --}}
+            <div class="card">
+                <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400">
-                            Tus encuestas
-                        </div>
-                        <h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">
-                            Actividad reciente
-                        </h3>
+                        <span class="badge-primary">Tus encuestas</span>
+                        <h2 class="mt-2 text-2xl font-bold text-slate-900">Actividad reciente</h2>
                     </div>
 
-                    <a href="{{ route('surveys.index') }}"
-                       class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                    <a href="{{ route('surveys.index') }}" class="btn-secondary">
                         Ver todo
                     </a>
                 </div>
 
-<div class="mt-6 rounded-[24px] bg-slate-50 p-6">
-    @if($recentSurveys->isEmpty())
-        <div class="flex min-h-[300px] flex-col items-center justify-center rounded-[20px] border border-dashed border-slate-300 bg-white px-6 text-center">
-            <div class="flex h-16 w-16 items-center justify-center rounded-[20px] bg-gradient-to-br from-indigo-500 to-violet-500 text-2xl font-bold text-white shadow-lg">
-                +
-            </div>
-
-            <h4 class="mt-5 text-2xl font-bold tracking-tight text-slate-900">
-                Aún no tienes encuestas creadas
-            </h4>
-
-            <p class="mt-3 max-w-md text-sm leading-7 text-slate-500">
-                Empieza creando tu primera encuesta y aquí verás su actividad,
-                respuestas y accesos más importantes.
-            </p>
-
-            <a href="{{ route('surveys.create') }}"
-               class="mt-6 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(99,102,241,.25)] transition hover:-translate-y-0.5">
-                Crear mi primera encuesta
-            </a>
-        </div>
-    @else
-        <div class="space-y-4">
-            @foreach($recentSurveys as $survey)
-                <div class="rounded-[20px] border border-slate-200 bg-white p-5">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <div class="text-lg font-bold text-slate-900">
-                                {{ $survey->title }}
+                <div class="mt-6">
+                    @if($recentSurveys->isEmpty())
+                        <div class="flex min-h-[320px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-2xl font-bold text-white shadow-lg">
+                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
                             </div>
 
-                            @if(!empty($survey->description))
-                                <div class="mt-1 text-sm text-slate-500">
-                                    {{ $survey->description }}
-                                </div>
-                            @endif
+                            <h3 class="mt-5 text-xl font-bold text-slate-900">
+                                Aún no tienes encuestas
+                            </h3>
 
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                                    Estado: {{ ucfirst($survey->status) }}
-                                </span>
+                            <p class="mt-2 max-w-sm text-sm text-slate-600 leading-relaxed">
+                                Crea tu primera encuesta y comienza a recopilar respuestas de forma profesional.
+                            </p>
 
-                                <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-                                    Respuestas: {{ $survey->responses_count }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col gap-2 sm:flex-row">
-                            <a href="{{ route('builder.edit', $survey) }}"
-                               class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
-                                Editar
+                            <a href="{{ route('surveys.create') }}" class="btn-primary mt-6">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Crear primera encuesta
                             </a>
-
-                            @if($survey->status === 'published' && $survey->share_token)
-                                <a href="{{ route('surveys.public.show', $survey->share_token) }}"
-                                   target="_blank"
-                                   class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
-                                    Ver encuesta
-                                </a>
-                            @endif
                         </div>
-                    </div>
+                    @else
+                        <div class="space-y-3">
+                            @foreach($recentSurveys as $survey)
+                                <div class="card-hover">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="min-w-0 flex-1">
+                                            <h3 class="text-lg font-bold text-slate-900">
+                                                {{ $survey->title }}
+                                            </h3>
+
+                                            @if(!empty($survey->description))
+                                                <p class="mt-1 text-sm text-slate-600">
+                                                    {{ Str::limit($survey->description, 100) }}
+                                                </p>
+                                            @endif
+
+                                            <div class="mt-3 flex flex-wrap gap-2">
+                                                <span class="badge-gray">
+                                                    {{ ucfirst($survey->status) }}
+                                                </span>
+
+                                                <span class="badge-primary">
+                                                    {{ $survey->responses_count }} respuestas
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex gap-2">
+                                            <a href="{{ route('builder.edit', $survey) }}" class="btn-secondary">
+                                                Editar
+                                            </a>
+
+                                            @if($survey->status === 'published' && $survey->share_token)
+                                                <a href="{{ route('surveys.public.show', $survey->share_token) }}"
+                                                   target="_blank"
+                                                   class="btn-primary">
+                                                    Ver
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
-            @endforeach
-        </div>
-    @endif
-</div>
             </div>
 
-            <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-                <div class="text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400">
-                    Flujo
-                </div>
-                <h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">
-                    Cómo funciona
-                </h3>
+            {{-- Cómo funciona --}}
+            <div class="card">
+                <span class="badge-primary">Guía rápida</span>
+                <h2 class="mt-2 text-2xl font-bold text-slate-900">Cómo funciona</h2>
 
-                <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <div class="rounded-[22px] bg-slate-50 p-5">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white">1</div>
-                        <div class="mt-4 text-lg font-bold text-slate-900">Crea</div>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
-                            Diseña una encuesta con estilo visual claro.
-                        </p>
-                    </div>
-
-                    <div class="rounded-[22px] bg-slate-50 p-5">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white">2</div>
-                        <div class="mt-4 text-lg font-bold text-slate-900">Comparte</div>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
-                            Envía el enlace por donde quieras.
-                        </p>
-                    </div>
-
-                    <div class="rounded-[22px] bg-slate-50 p-5">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white">3</div>
-                        <div class="mt-4 text-lg font-bold text-slate-900">Analiza</div>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
-                            Revisa respuestas y resultados rápidamente.
-                        </p>
-                    </div>
+                <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    @foreach([
+                        ['num' => '1', 'title' => 'Crea', 'desc' => 'Diseña tu encuesta con el editor visual'],
+                        ['num' => '2', 'title' => 'Comparte', 'desc' => 'Envía el enlace por cualquier canal'],
+                        ['num' => '3', 'title' => 'Analiza', 'desc' => 'Revisa respuestas en tiempo real']
+                    ] as $step)
+                        <div class="rounded-xl bg-slate-50 p-5 transition-all duration-200 hover:bg-slate-100">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-sm font-bold text-white">
+                                {{ $step['num'] }}
+                            </div>
+                            <h3 class="mt-4 text-lg font-bold text-slate-900">{{ $step['title'] }}</h3>
+                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{{ $step['desc'] }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
 
-        {{-- DERECHA --}}
+        {{-- SIDEBAR (1/3) --}}
         <div class="space-y-6">
-            <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-                <div class="text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400">
-                    Acciones rápidas
-                </div>
-                <h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">
-                    Empieza más rápido
-                </h3>
+            {{-- Acciones Rápidas --}}
+            <div class="card">
+                <span class="badge-primary">Acciones</span>
+                <h2 class="mt-2 text-xl font-bold text-slate-900">Acceso rápido</h2>
 
-                <div class="mt-6 space-y-3">
-                    <a href="{{ route('surveys.create') }}"
-                       class="block rounded-[22px] bg-slate-50 p-4 transition hover:bg-slate-100">
-                        <div class="text-base font-semibold text-slate-900">Nueva encuesta</div>
-                        <div class="mt-1 text-sm text-slate-500">Comienza desde cero</div>
-                    </a>
-
-                    <a href="{{ route('templates.index') }}"
-                       class="block rounded-[22px] bg-slate-50 p-4 transition hover:bg-slate-100">
-                        <div class="text-base font-semibold text-slate-900">Usar plantilla</div>
-                        <div class="mt-1 text-sm text-slate-500">Ahorra tiempo con una base lista</div>
-                    </a>
-
-                    <a href="{{ route('surveys.index') }}"
-                       class="block rounded-[22px] bg-slate-50 p-4 transition hover:bg-slate-100">
-                        <div class="text-base font-semibold text-slate-900">Mis encuestas</div>
-                        <div class="mt-1 text-sm text-slate-500">Administra lo que hayas creado</div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-                <div class="text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400">
-                    Plantillas
-                </div>
-                <h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">
-                    Sugeridas para ti
-                </h3>
-
-                @php
-                    $quick = [
-                        ['title' => 'Encuesta de satisfacción', 'desc' => 'Calificación + comentario', 'bg' => 'from-indigo-500 to-violet-500'],
-                        ['title' => 'Registro rápido', 'desc' => 'Nombre, correo y mensaje', 'bg' => 'from-cyan-500 to-sky-500'],
-                        ['title' => 'NPS', 'desc' => '0–10 + razón', 'bg' => 'from-emerald-500 to-green-500'],
-                    ];
-                @endphp
-
-                <div class="mt-6 space-y-4">
-                    @foreach($quick as $q)
-                        <a href="{{ route('surveys.create') }}"
-                           class="flex items-start gap-4 rounded-[22px] bg-slate-50 p-4 transition hover:bg-slate-100">
-                            <div class="h-12 w-12 shrink-0 rounded-2xl bg-gradient-to-br {{ $q['bg'] }}"></div>
+                <div class="mt-6 space-y-2">
+                    @foreach([
+                        ['route' => 'surveys.create', 'icon' => 'M12 4v16m8-8H4', 'title' => 'Nueva encuesta', 'desc' => 'Desde cero'],
+                        ['route' => 'templates.index', 'icon' => 'M4 5a1 1 0 011-1h4a1 1 0 010 2H6v10h4a1 1 0 110 2H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 110 2h-3v10h3a1 1 0 110 2h-4a1 1 0 01-1-1V5z', 'title' => 'Plantillas', 'desc' => 'Usa una base'],
+                        ['route' => 'surveys.index', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'title' => 'Mis encuestas', 'desc' => 'Administrar']
+                    ] as $action)
+                        <a href="{{ route($action['route']) }}" class="flex items-center gap-3 rounded-xl bg-slate-50 p-4 transition-all duration-200 hover:bg-slate-100 hover:scale-[1.02] active:scale-[0.98]">
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm">
+                                <svg class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $action['icon'] }}"/>
+                                </svg>
+                            </div>
                             <div>
-                                <div class="text-base font-semibold text-slate-900">{{ $q['title'] }}</div>
-                                <div class="mt-1 text-sm text-slate-500">{{ $q['desc'] }}</div>
-                                <div class="mt-3 text-sm font-semibold text-indigo-600">Usar plantilla →</div>
+                                <div class="font-semibold text-slate-900">{{ $action['title'] }}</div>
+                                <div class="text-xs text-slate-600">{{ $action['desc'] }}</div>
                             </div>
                         </a>
                     @endforeach
                 </div>
             </div>
+
+            {{-- Plantillas Sugeridas --}}
+            <div class="card">
+                <span class="badge-primary">Plantillas</span>
+                <h2 class="mt-2 text-xl font-bold text-slate-900">Sugeridas</h2>
+
+                <div class="mt-6 space-y-3">
+                    @foreach([
+                        ['title' => 'Satisfacción', 'desc' => 'NPS + comentarios', 'color' => 'from-indigo-500 to-violet-500'],
+                        ['title' => 'Registro', 'desc' => 'Datos de contacto', 'color' => 'from-cyan-500 to-blue-500'],
+                        ['title' => 'Feedback', 'desc' => 'Opinión rápida', 'color' => 'from-emerald-500 to-green-500']
+                    ] as $template)
+                        <a href="{{ route('surveys.create') }}" class="flex items-center gap-3 rounded-xl bg-slate-50 p-3 transition-all duration-200 hover:bg-slate-100 hover:scale-[1.02] active:scale-[0.98]">
+                            <div class="h-12 w-12 shrink-0 rounded-lg bg-gradient-to-br {{ $template['color'] }} shadow-sm"></div>
+                            <div class="min-w-0 flex-1">
+                                <div class="font-semibold text-slate-900">{{ $template['title'] }}</div>
+                                <div class="text-xs text-slate-600">{{ $template['desc'] }}</div>
+                            </div>
+                            <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 </div>
 @endsection
