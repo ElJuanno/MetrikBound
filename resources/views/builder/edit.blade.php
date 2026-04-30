@@ -191,29 +191,41 @@
   }
 
   .toolGrid{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    margin-top:12px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:8px;
+    margin-top:10px;
   }
 
+  /* Tarjeta visual compacta tipo Canva */
   .toolCard{
     display:flex;
+    flex-direction:column;
     align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:12px 13px;
-    border-radius:16px;
+    justify-content:center;
+    gap:0;
+    padding:0;
+    border-radius:12px;
     border:1px solid var(--line);
     background: rgba(255,255,255,.78);
     backdrop-filter: blur(10px);
     cursor:grab;
     user-select:none;
     transition:.15s ease;
-    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    box-shadow: 0 2px 8px rgba(2,6,23,.04);
     -webkit-user-drag: element;
     position:relative;
     overflow:hidden;
+    min-height:72px;
+  }
+
+  /* Tarjeta de ancho completo (separadores) */
+  .toolCard.full{
+    grid-column: span 2;
+    flex-direction:row;
+    min-height:44px;
+    padding:0 12px;
+    gap:10px;
   }
 
   body[data-theme="dark"] .toolCard{
@@ -227,11 +239,12 @@
     background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(34,211,238,.05));
     opacity:0;
     transition:.15s ease;
+    pointer-events:none;
   }
 
   .toolCard:hover{
     border-color: color-mix(in oklab, var(--brandA) 32%, var(--line));
-    box-shadow: 0 18px 40px rgba(99,102,241,.12);
+    box-shadow: 0 8px 24px rgba(99,102,241,.12);
     transform: translateY(-1px);
   }
 
@@ -241,11 +254,50 @@
 
   .toolCard:active{
     cursor:grabbing;
+    transform: scale(.97);
   }
 
-  .toolCard > *{
+  /* Zona de preview dentro de la tarjeta */
+  .tPreview{
+    width:100%;
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 8px 6px;
     position:relative;
     z-index:1;
+  }
+
+  .toolCard.full .tPreview{
+    flex:1;
+    padding:0;
+    justify-content:flex-start;
+  }
+
+  /* Nombre debajo del preview */
+  .tLabel{
+    width:100%;
+    font-size:10px;
+    font-weight:800;
+    color:var(--muted);
+    text-align:center;
+    padding:4px 6px 7px;
+    letter-spacing:.02em;
+    position:relative;
+    z-index:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .toolCard.full .tLabel{
+    width:auto;
+    flex-shrink:0;
+    padding:0;
+    font-size:11px;
+    color:var(--ink);
+    font-weight:700;
   }
 
   .toolCard .tName{
@@ -278,14 +330,14 @@
 
   /* Estilos tipo Canva para previsualizaciones */
   .stylePreview{
-    border-radius:16px;
+    border-radius:12px;
     border:1px solid var(--line);
     background: rgba(255,255,255,.78);
     backdrop-filter: blur(10px);
     cursor:pointer;
     user-select:none;
     transition:.15s ease;
-    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    box-shadow: 0 2px 8px rgba(2,6,23,.04);
     overflow:hidden;
     position:relative;
   }
@@ -301,11 +353,12 @@
     background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(34,211,238,.05));
     opacity:0;
     transition:.15s ease;
+    pointer-events:none;
   }
 
   .stylePreview:hover{
     border-color: color-mix(in oklab, var(--brandA) 32%, var(--line));
-    box-shadow: 0 18px 40px rgba(99,102,241,.12);
+    box-shadow: 0 8px 24px rgba(99,102,241,.12);
     transform: translateY(-1px);
   }
 
@@ -314,8 +367,8 @@
   }
 
   .previewBox{
-    padding:16px 14px;
-    min-height:80px;
+    padding:12px 10px;
+    min-height:60px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -335,27 +388,29 @@
   }
 
   .styleName{
-    padding:10px 14px;
-    font-size:12px;
+    padding:6px 10px;
+    font-size:10px;
     font-weight:800;
     color:var(--muted);
     text-align:center;
     border-top:1px solid var(--line);
     position:relative;
     z-index:1;
+    letter-spacing:.02em;
   }
 
   .questionPreview{
-    border-radius:16px;
+    border-radius:12px;
     border:1px solid var(--line);
     background: rgba(255,255,255,.78);
     backdrop-filter: blur(10px);
-    cursor:pointer;
+    cursor:grab;
     user-select:none;
     transition:.15s ease;
-    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    box-shadow: 0 2px 8px rgba(2,6,23,.04);
     overflow:hidden;
     position:relative;
+    -webkit-user-drag: element;
   }
 
   body[data-theme="dark"] .questionPreview{
@@ -369,11 +424,12 @@
     background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(34,211,238,.05));
     opacity:0;
     transition:.15s ease;
+    pointer-events:none;
   }
 
   .questionPreview:hover{
     border-color: color-mix(in oklab, var(--brandA) 32%, var(--line));
-    box-shadow: 0 18px 40px rgba(99,102,241,.12);
+    box-shadow: 0 8px 24px rgba(99,102,241,.12);
     transform: translateY(-1px);
   }
 
@@ -381,8 +437,13 @@
     opacity:1;
   }
 
+  .questionPreview:active{
+    cursor:grabbing;
+    transform: scale(.97);
+  }
+
   .qPreviewBox{
-    padding:14px;
+    padding:10px 10px 8px;
     background: linear-gradient(180deg, rgba(248,250,252,.95), rgba(255,255,255,.95));
     position:relative;
     z-index:1;
@@ -393,15 +454,16 @@
   }
 
   .qPreviewLabel{
-    font-size:13px;
+    font-size:11px;
     font-weight:800;
     color:var(--ink);
-    margin-bottom:8px;
+    margin-bottom:6px;
+    line-height:1.3;
   }
 
   .qPreviewInput{
-    height:32px;
-    border-radius:10px;
+    height:24px;
+    border-radius:8px;
     border:1px solid var(--line);
     background: rgba(255,255,255,.90);
   }
@@ -409,23 +471,23 @@
   .qPreviewOption{
     display:flex;
     align-items:center;
-    gap:8px;
-    font-size:12px;
+    gap:6px;
+    font-size:11px;
     color:var(--muted);
-    margin-bottom:6px;
+    margin-bottom:4px;
   }
 
   .qPreviewDot{
-    width:12px;
-    height:12px;
+    width:10px;
+    height:10px;
     border-radius:999px;
     border:2px solid var(--muted);
     flex-shrink:0;
   }
 
   .qPreviewCheck{
-    width:12px;
-    height:12px;
+    width:10px;
+    height:10px;
     border-radius:3px;
     border:2px solid var(--muted);
     flex-shrink:0;
@@ -1013,6 +1075,19 @@
     line-height:1.5;
   }
 
+  /* Etiqueta de sección en el panel izquierdo */
+  .sectionLabel{
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:4px 2px 2px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:4px;
+    grid-column: span 2;
+  }
+
   .builderContextMenu{
     position:fixed;
     min-width:180px;
@@ -1104,93 +1179,224 @@
 
     <div id="tab_text" class="tab">
       <div class="toolGrid">
-        <!-- Estilos de título predefinidos -->
-        <div class="stylePreview" data-style="title-bold">
-          <div class="previewBox">
-            <div class="previewTitle" style="font-weight:900;font-size:32px;color:#0f172a;">Título Principal</div>
+
+        <!-- ── Textos (span 2 cols cada uno) ── -->
+        <div class="sectionLabel" style="grid-column:span 2;">Textos</div>
+
+        <div class="stylePreview" data-style="title-bold" style="grid-column:span 2;">
+          <div class="previewBox" style="min-height:52px;">
+            <div class="previewTitle" style="font-weight:900;font-size:26px;color:#0f172a;line-height:1;">Título Bold</div>
           </div>
           <div class="styleName">Título Bold</div>
         </div>
 
         <div class="stylePreview" data-style="title-elegant">
-          <div class="previewBox">
-            <div class="previewTitle" style="font-family:Georgia,serif;font-size:28px;color:#1e293b;">Título Elegante</div>
+          <div class="previewBox" style="min-height:52px;">
+            <div class="previewTitle" style="font-family:Georgia,serif;font-size:20px;color:#1e293b;line-height:1;">Serif</div>
           </div>
           <div class="styleName">Título Serif</div>
         </div>
 
         <div class="stylePreview" data-style="subtitle">
-          <div class="previewBox">
-            <div class="previewTitle" style="font-weight:600;font-size:20px;color:#475569;">Subtítulo</div>
+          <div class="previewBox" style="min-height:52px;">
+            <div class="previewTitle" style="font-weight:600;font-size:16px;color:#475569;line-height:1;">Subtítulo</div>
           </div>
           <div class="styleName">Subtítulo</div>
         </div>
 
-        <!-- Estilos de párrafo -->
         <div class="stylePreview" data-style="text-normal">
-          <div class="previewBox">
-            <div class="previewText" style="font-size:14px;line-height:1.6;color:#64748b;">Este es un párrafo de texto normal para describir o explicar algo.</div>
+          <div class="previewBox" style="min-height:52px;">
+            <div class="previewText" style="font-size:12px;line-height:1.5;color:#64748b;">Texto de párrafo normal.</div>
           </div>
           <div class="styleName">Texto Normal</div>
         </div>
 
         <div class="stylePreview" data-style="text-small">
-          <div class="previewBox">
-            <div class="previewText" style="font-size:12px;line-height:1.5;color:#94a3b8;">Texto pequeño para notas o aclaraciones adicionales.</div>
+          <div class="previewBox" style="min-height:52px;">
+            <div class="previewText" style="font-size:10px;line-height:1.4;color:#94a3b8;">Nota o aclaración pequeña.</div>
           </div>
           <div class="styleName">Texto Pequeño</div>
         </div>
 
-        <!-- Separador -->
-        <div class="toolCard tool" draggable="true" data-type="divider">
-          <div>
-            <div class="tName">Separador</div>
-            <div class="tHint">Divide secciones</div>
+        <!-- ── Separadores (ancho completo) ── -->
+        <div class="sectionLabel" style="grid-column:span 2;margin-top:4px;">Separadores</div>
+
+        <div class="toolCard full tool" draggable="true" data-type="divider">
+          <div class="tPreview" style="padding:0;">
+            <div style="width:100%;height:2px;border-radius:999px;background:#cbd5e1;"></div>
           </div>
-          <span class="pill">UI</span>
+          <div class="tLabel">Simple</div>
         </div>
+
+        <div class="toolCard full tool" draggable="true" data-type="divider_double">
+          <div class="tPreview" style="padding:0;flex-direction:column;gap:3px;">
+            <div style="width:100%;height:2px;border-radius:999px;background:#cbd5e1;"></div>
+            <div style="width:100%;height:1px;border-radius:999px;background:#cbd5e1;opacity:.5;"></div>
+          </div>
+          <div class="tLabel">Doble</div>
+        </div>
+
+        <div class="toolCard full tool" draggable="true" data-type="divider_dashed">
+          <div class="tPreview" style="padding:0;">
+            <div style="width:100%;height:2px;background:repeating-linear-gradient(90deg,#94a3b8 0,#94a3b8 8px,transparent 8px,transparent 14px);border-radius:999px;"></div>
+          </div>
+          <div class="tLabel">Punteada</div>
+        </div>
+
+        <div class="toolCard full tool" draggable="true" data-type="divider_gradient">
+          <div class="tPreview" style="padding:0;">
+            <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent,#6366f1,transparent);border-radius:999px;"></div>
+          </div>
+          <div class="tLabel">Degradado</div>
+        </div>
+
+        <div class="toolCard full tool" draggable="true" data-type="divider_text">
+          <div class="tPreview" style="padding:0;gap:6px;">
+            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+            <span style="font-size:9px;font-weight:700;color:#94a3b8;white-space:nowrap;">SECCIÓN</span>
+            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+          </div>
+          <div class="tLabel">Con texto</div>
+        </div>
+
+        <div class="toolCard full tool" draggable="true" data-type="divider_dots">
+          <div class="tPreview" style="padding:0;gap:5px;">
+            <div style="width:5px;height:5px;border-radius:50%;background:#94a3b8;flex-shrink:0;"></div>
+            <div style="width:5px;height:5px;border-radius:50%;background:#94a3b8;opacity:.6;flex-shrink:0;"></div>
+            <div style="width:5px;height:5px;border-radius:50%;background:#94a3b8;opacity:.35;flex-shrink:0;"></div>
+          </div>
+          <div class="tLabel">Puntos</div>
+        </div>
+
+        <!-- ── Cajas decorativas ── -->
+        <div class="sectionLabel" style="grid-column:span 2;margin-top:4px;">Cajas</div>
+
+        <div class="toolCard tool" draggable="true" data-type="highlight_box">
+          <div class="tPreview">
+            <div style="width:100%;border-left:3px solid #3b82f6;background:#eff6ff;border-radius:0 8px 8px 0;padding:6px 8px;font-size:10px;color:#1e40af;line-height:1.4;">ℹ️ Información importante</div>
+          </div>
+          <div class="tLabel">Info</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="highlight_success">
+          <div class="tPreview">
+            <div style="width:100%;border-left:3px solid #22c55e;background:#f0fdf4;border-radius:0 8px 8px 0;padding:6px 8px;font-size:10px;color:#166534;line-height:1.4;">✅ Confirmación</div>
+          </div>
+          <div class="tLabel">Éxito</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="highlight_warning">
+          <div class="tPreview">
+            <div style="width:100%;border-left:3px solid #f59e0b;background:#fffbeb;border-radius:0 8px 8px 0;padding:6px 8px;font-size:10px;color:#92400e;line-height:1.4;">⚠️ Advertencia</div>
+          </div>
+          <div class="tLabel">Aviso</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="highlight_danger">
+          <div class="tPreview">
+            <div style="width:100%;border-left:3px solid #ef4444;background:#fef2f2;border-radius:0 8px 8px 0;padding:6px 8px;font-size:10px;color:#991b1b;line-height:1.4;">🚨 Peligro</div>
+          </div>
+          <div class="tLabel">Alerta</div>
+        </div>
+
+        <!-- ── Citas y callouts ── -->
+        <div class="sectionLabel" style="grid-column:span 2;margin-top:4px;">Citas y callouts</div>
+
+        <div class="toolCard tool" draggable="true" data-type="quote">
+          <div class="tPreview">
+            <div style="width:100%;border-left:3px solid #6366f1;padding:4px 8px;position:relative;">
+              <div style="font-size:22px;color:#6366f1;opacity:.2;font-family:Georgia,serif;line-height:1;position:absolute;top:0;left:8px;">"</div>
+              <div style="font-size:10px;color:#334155;font-style:italic;padding-left:10px;line-height:1.4;">Texto de cita aquí</div>
+            </div>
+          </div>
+          <div class="tLabel">Cita</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="callout">
+          <div class="tPreview">
+            <div style="width:100%;border:1.5px solid #6366f1;border-radius:8px;overflow:hidden;">
+              <div style="background:#6366f115;padding:3px 6px;font-size:9px;font-weight:800;color:#6366f1;border-bottom:1px solid #6366f120;">💡 Nota</div>
+              <div style="padding:4px 6px;font-size:9px;color:#1e293b;line-height:1.3;">Contenido del callout</div>
+            </div>
+          </div>
+          <div class="tLabel">Callout</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="callout_tip">
+          <div class="tPreview">
+            <div style="width:100%;border:1.5px solid #22c55e;border-radius:8px;overflow:hidden;">
+              <div style="background:#22c55e15;padding:3px 6px;font-size:9px;font-weight:800;color:#16a34a;border-bottom:1px solid #22c55e20;">✅ Consejo</div>
+              <div style="padding:4px 6px;font-size:9px;color:#1e293b;line-height:1.3;">Tip útil aquí</div>
+            </div>
+          </div>
+          <div class="tLabel">Tip</div>
+        </div>
+
+        <!-- ── Badges y numeración ── -->
+        <div class="sectionLabel" style="grid-column:span 2;margin-top:4px;">Badges</div>
+
+        <div class="toolCard tool" draggable="true" data-type="badge">
+          <div class="tPreview">
+            <div style="padding:5px 14px;border-radius:999px;background:#eef2ff;border:1.5px solid #c7d2fe;font-size:11px;font-weight:800;color:#4f46e5;">Etiqueta</div>
+          </div>
+          <div class="tLabel">Pill</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="badge_solid">
+          <div class="tPreview">
+            <div style="padding:5px 14px;border-radius:8px;background:#6366f1;font-size:11px;font-weight:800;color:#fff;">Etiqueta</div>
+          </div>
+          <div class="tLabel">Sólido</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="number_heading" style="grid-column:span 2;">
+          <div class="tPreview" style="gap:10px;padding:10px 14px 6px;">
+            <span style="font-size:32px;font-weight:900;color:#6366f1;opacity:.25;line-height:1;letter-spacing:-2px;">01</span>
+            <span style="font-size:13px;font-weight:800;color:#0f172a;">Título de sección</span>
+          </div>
+          <div class="tLabel" style="text-align:left;padding-left:14px;">Sección numerada</div>
+        </div>
+
       </div>
     </div>
 
     <div id="tab_questions" class="tab" style="display:none;">
       <div class="toolGrid">
-        <!-- Pregunta Sí/No -->
-        <div class="questionPreview tool" draggable="true" data-type="q_yesno">
+
+        <div class="questionPreview tool" draggable="true" data-type="q_yesno" style="grid-column:span 2;">
           <div class="qPreviewBox">
             <div class="qPreviewLabel">¿Estás de acuerdo?</div>
-            <div style="display:flex;gap:10px;margin-top:10px;">
-              <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.04));">Sí</div>
-              <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.04));">No</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <div style="flex:1;height:28px;border-radius:8px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--ink);background:rgba(34,197,94,.06);">Sí</div>
+              <div style="flex:1;height:28px;border-radius:8px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--ink);background:rgba(239,68,68,.06);">No</div>
             </div>
           </div>
           <div class="styleName">Sí / No</div>
         </div>
 
-        <!-- Calificación con Estrellas -->
-        <div class="questionPreview tool" draggable="true" data-type="q_stars">
+        <div class="questionPreview tool" draggable="true" data-type="q_stars" style="grid-column:span 2;">
           <div class="qPreviewBox">
             <div class="qPreviewLabel">Califica tu experiencia</div>
-            <div style="display:flex;gap:6px;margin-top:10px;justify-content:center;">
-              <svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg style="width:24px;height:24px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg style="width:24px;height:24px;fill:#e5e7eb;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg style="width:24px;height:24px;fill:#e5e7eb;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <div style="display:flex;gap:4px;margin-top:8px;justify-content:center;">
+              <svg style="width:18px;height:18px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:18px;height:18px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:18px;height:18px;fill:#fbbf24;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:18px;height:18px;fill:#e5e7eb;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg style="width:18px;height:18px;fill:#e5e7eb;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
           </div>
           <div class="styleName">Estrellas</div>
         </div>
 
-        <!-- Escala Numérica Personalizable -->
-        <div class="questionPreview tool" draggable="true" data-type="q_numeric">
+        <div class="questionPreview tool" draggable="true" data-type="q_numeric" style="grid-column:span 2;">
           <div class="qPreviewBox">
             <div class="qPreviewLabel">Del 1 al 10</div>
-            <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;">
-              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">1</div>
-              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">2</div>
-              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">3</div>
-              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">...</div>
-              <div style="width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">10</div>
+            <div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;">
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">1</div>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">2</div>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">3</div>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);">…</div>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.90);">10</div>
             </div>
           </div>
           <div class="styleName">Escala 1-10</div>
@@ -1206,59 +1412,39 @@
 
         <div class="questionPreview tool" draggable="true" data-type="q_radio">
           <div class="qPreviewBox">
-            <div class="qPreviewLabel">Selecciona una opción</div>
-            <div class="qPreviewOption">
-              <div class="qPreviewDot"></div>
-              <span>Opción 1</span>
-            </div>
-            <div class="qPreviewOption">
-              <div class="qPreviewDot"></div>
-              <span>Opción 2</span>
-            </div>
-            <div class="qPreviewOption">
-              <div class="qPreviewDot"></div>
-              <span>Opción 3</span>
-            </div>
+            <div class="qPreviewLabel">Opción múltiple</div>
+            <div class="qPreviewOption"><div class="qPreviewDot"></div><span>Opción 1</span></div>
+            <div class="qPreviewOption"><div class="qPreviewDot"></div><span>Opción 2</span></div>
           </div>
-          <div class="styleName">Opción múltiple</div>
+          <div class="styleName">Radio</div>
         </div>
 
         <div class="questionPreview tool" draggable="true" data-type="q_check">
           <div class="qPreviewBox">
-            <div class="qPreviewLabel">Selecciona varias</div>
-            <div class="qPreviewOption">
-              <div class="qPreviewCheck"></div>
-              <span>Opción A</span>
-            </div>
-            <div class="qPreviewOption">
-              <div class="qPreviewCheck"></div>
-              <span>Opción B</span>
-            </div>
-            <div class="qPreviewOption">
-              <div class="qPreviewCheck"></div>
-              <span>Opción C</span>
-            </div>
+            <div class="qPreviewLabel">Varias opciones</div>
+            <div class="qPreviewOption"><div class="qPreviewCheck"></div><span>Opción A</span></div>
+            <div class="qPreviewOption"><div class="qPreviewCheck"></div><span>Opción B</span></div>
           </div>
-          <div class="styleName">Casillas múltiples</div>
+          <div class="styleName">Checkbox</div>
         </div>
 
         <div class="questionPreview tool" draggable="true" data-type="q_select">
           <div class="qPreviewBox">
-            <div class="qPreviewLabel">Elige del menú</div>
-            <div class="qPreviewInput" style="padding:8px 10px;font-size:12px;color:var(--muted);">Selecciona...</div>
+            <div class="qPreviewLabel">Lista desplegable</div>
+            <div class="qPreviewInput" style="padding:5px 8px;font-size:10px;color:var(--muted);">Selecciona…</div>
           </div>
-          <div class="styleName">Lista desplegable</div>
+          <div class="styleName">Combo</div>
         </div>
 
         <div class="questionPreview tool" draggable="true" data-type="q_scale">
           <div class="qPreviewBox">
-            <div class="qPreviewLabel">Califica del 1 al 5</div>
-            <div style="display:flex;gap:6px;margin-top:8px;">
-              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">1</div>
-              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">2</div>
-              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">3</div>
-              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">4</div>
-              <div style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted);">5</div>
+            <div class="qPreviewLabel">Escala 1–5</div>
+            <div style="display:flex;gap:4px;margin-top:6px;">
+              <div style="width:22px;height:22px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);">1</div>
+              <div style="width:22px;height:22px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);">2</div>
+              <div style="width:22px;height:22px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);">3</div>
+              <div style="width:22px;height:22px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);">4</div>
+              <div style="width:22px;height:22px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);">5</div>
             </div>
           </div>
           <div class="styleName">Escala 1-5</div>
@@ -1266,33 +1452,31 @@
 
         <div class="questionPreview tool" draggable="true" data-type="q_date">
           <div class="qPreviewBox">
-            <div class="qPreviewLabel">Selecciona una fecha</div>
-            <div style="display:flex;gap:6px;margin-top:8px;">
-              <div style="flex:1;height:32px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--muted);">DD</div>
-              <div style="flex:1;height:32px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--muted);">MM</div>
-              <div style="flex:1;height:32px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--muted);">AAAA</div>
+            <div class="qPreviewLabel">Fecha</div>
+            <div style="display:flex;gap:4px;margin-top:6px;">
+              <div style="flex:1;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:9px;color:var(--muted);">DD</div>
+              <div style="flex:1;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:9px;color:var(--muted);">MM</div>
+              <div style="flex:1;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:9px;color:var(--muted);">AAAA</div>
             </div>
           </div>
           <div class="styleName">Fecha</div>
         </div>
+
       </div>
     </div>
 
     <div id="tab_media" class="tab" style="display:none;">
       <div class="toolGrid">
-        <div class="questionPreview tool" draggable="true" data-type="img">
-          <div class="qPreviewBox" style="min-height:120px;display:grid;place-items:center;">
-            <div style="text-align:center;">
-              <div style="width:48px;height:48px;margin:0 auto 8px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,.14),rgba(34,211,238,.10));display:grid;place-items:center;font-size:24px;">🖼️</div>
-              <div style="font-size:12px;color:var(--muted);font-weight:800;">Arrastra para agregar</div>
-            </div>
+        <div class="toolCard tool" draggable="true" data-type="img" style="grid-column:span 2;min-height:90px;">
+          <div class="tPreview" style="flex-direction:column;gap:6px;padding:14px 14px 8px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(99,102,241,.14),rgba(34,211,238,.10));display:grid;place-items:center;font-size:22px;">🖼️</div>
+            <div style="font-size:11px;color:var(--muted);font-weight:700;">Arrastra para agregar</div>
           </div>
-          <div class="styleName">Imagen</div>
+          <div class="tLabel" style="text-align:center;padding-bottom:10px;">Imagen</div>
         </div>
       </div>
-
-      <p class="panelSub" style="margin-top:14px;">
-        Arrastra el bloque al canvas y haz clic para seleccionar una imagen de tu computadora.
+      <p class="panelSub" style="margin-top:12px;padding:0 2px;">
+        Haz clic en el bloque de imagen en el canvas para seleccionar un archivo.
       </p>
     </div>
 
@@ -1401,6 +1585,90 @@
         <label>Opciones (una por línea)</label>
         <textarea class="textarea" id="propOptions" placeholder="Opción 1&#10;Opción 2&#10;Opción 3"></textarea>
       </div>
+
+      <!-- Propiedades de separador -->
+      <div id="propDividerWrap" style="display:none;">
+        <div class="field">
+          <label>Color de línea</label>
+          <div class="colorChip" id="propDividerColorBtn">
+            <input class="colorNative" id="propDividerColor" type="color" value="#e2e8f0">
+            <span class="colorSwatch" id="propDividerColorSw"></span>
+            <span class="colorText" id="propDividerColorTxt">#e2e8f0</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Grosor</label>
+          <div class="rangeRow">
+            <input id="propDividerThickness" type="range" min="1" max="8" value="2">
+            <span class="mini" id="propDividerThicknessVal">2px</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propiedades de highlight box -->
+      <div id="propHighlightWrap" style="display:none;">
+        <div class="field">
+          <label>Color de borde</label>
+          <div class="colorChip" id="propBorderColorBtn">
+            <input class="colorNative" id="propBorderColor" type="color" value="#3b82f6">
+            <span class="colorSwatch" id="propBorderColorSw"></span>
+            <span class="colorText" id="propBorderColorTxt">#3b82f6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propiedades de quote -->
+      <div id="propQuoteWrap" style="display:none;">
+        <div class="field">
+          <label>Color de acento</label>
+          <div class="colorChip" id="propQuoteColorBtn">
+            <input class="colorNative" id="propQuoteColor" type="color" value="#6366f1">
+            <span class="colorSwatch" id="propQuoteColorSw"></span>
+            <span class="colorText" id="propQuoteColorTxt">#6366f1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propiedades de callout -->
+      <div id="propCalloutWrap" style="display:none;">
+        <div class="row2">
+          <div class="field">
+            <label>Ícono</label>
+            <input class="input" id="propCalloutIcon" type="text" value="💡" maxlength="4" style="text-align:center;font-size:20px;">
+          </div>
+          <div class="field">
+            <label>Título</label>
+            <input class="input" id="propCalloutTitle" type="text" value="Nota" placeholder="Nota">
+          </div>
+        </div>
+        <div class="field">
+          <label>Color de borde</label>
+          <div class="colorChip" id="propCalloutColorBtn">
+            <input class="colorNative" id="propCalloutColor" type="color" value="#6366f1">
+            <span class="colorSwatch" id="propCalloutColorSw"></span>
+            <span class="colorText" id="propCalloutColorTxt">#6366f1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propiedades de number_heading -->
+      <div id="propNumberWrap" style="display:none;">
+        <div class="row2">
+          <div class="field">
+            <label>Número</label>
+            <input class="input" id="propSectionNumber" type="text" value="01" maxlength="4" style="text-align:center;font-weight:900;">
+          </div>
+          <div class="field">
+            <label>Color número</label>
+            <div class="colorChip" id="propNumberColorBtn">
+              <input class="colorNative" id="propNumberColor" type="color" value="#6366f1">
+              <span class="colorSwatch" id="propNumberColorSw"></span>
+              <span class="colorText" id="propNumberColorTxt">#6366f1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="propCard" style="margin-top:14px;">
@@ -1595,6 +1863,176 @@
         }, 100);
       });
     });
+
+    // ── Helpers para color chips de nuevos controles ──
+    function bindColorChip(inputId, swatchId, textId, propKey, extraFn) {
+      const input = document.getElementById(inputId);
+      const swatch = document.getElementById(swatchId);
+      const text = document.getElementById(textId);
+      if (!input) return;
+
+      input.addEventListener('input', () => {
+        if (swatch) swatch.style.background = input.value;
+        if (text) text.textContent = input.value;
+        if (window.updateBlock && window.getSelectedBlock) {
+          const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+          if (!block) return;
+          const patch = { props: {} };
+          patch.props[propKey] = input.value;
+          window.updateBlock(block.id, patch);
+          if (extraFn) extraFn(block, input.value);
+          if (window.renderCanvas) window.renderCanvas();
+          if (window.selectBlockById) window.selectBlockById(block.id);
+          if (window.builderAutosave) window.builderAutosave();
+          if (window.builderPersistSelected) window.builderPersistSelected();
+        }
+      });
+      input.dispatchEvent(new Event('input'));
+    }
+
+    // Separador: color de línea
+    const propDividerColor = document.getElementById('propDividerColor');
+    const propDividerColorSw = document.getElementById('propDividerColorSw');
+    const propDividerColorTxt = document.getElementById('propDividerColorTxt');
+    if (propDividerColor) {
+      propDividerColor.addEventListener('input', () => {
+        if (propDividerColorSw) propDividerColorSw.style.background = propDividerColor.value;
+        if (propDividerColorTxt) propDividerColorTxt.textContent = propDividerColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { dividerColor: propDividerColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propDividerColor.dispatchEvent(new Event('input'));
+    }
+
+    // Separador: grosor
+    const propDividerThickness = document.getElementById('propDividerThickness');
+    const propDividerThicknessVal = document.getElementById('propDividerThicknessVal');
+    if (propDividerThickness) {
+      propDividerThickness.addEventListener('input', () => {
+        if (propDividerThicknessVal) propDividerThicknessVal.textContent = `${propDividerThickness.value}px`;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { dividerThickness: Number(propDividerThickness.value) } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    // Highlight: color de borde
+    const propBorderColor = document.getElementById('propBorderColor');
+    const propBorderColorSw = document.getElementById('propBorderColorSw');
+    const propBorderColorTxt = document.getElementById('propBorderColorTxt');
+    if (propBorderColor) {
+      propBorderColor.addEventListener('input', () => {
+        if (propBorderColorSw) propBorderColorSw.style.background = propBorderColor.value;
+        if (propBorderColorTxt) propBorderColorTxt.textContent = propBorderColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { borderColor: propBorderColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propBorderColor.dispatchEvent(new Event('input'));
+    }
+
+    // Quote: color de acento
+    const propQuoteColor = document.getElementById('propQuoteColor');
+    const propQuoteColorSw = document.getElementById('propQuoteColorSw');
+    const propQuoteColorTxt = document.getElementById('propQuoteColorTxt');
+    if (propQuoteColor) {
+      propQuoteColor.addEventListener('input', () => {
+        if (propQuoteColorSw) propQuoteColorSw.style.background = propQuoteColor.value;
+        if (propQuoteColorTxt) propQuoteColorTxt.textContent = propQuoteColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { quoteColor: propQuoteColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propQuoteColor.dispatchEvent(new Event('input'));
+    }
+
+    // Callout: ícono
+    const propCalloutIcon = document.getElementById('propCalloutIcon');
+    if (propCalloutIcon) {
+      propCalloutIcon.addEventListener('input', () => {
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { calloutIcon: propCalloutIcon.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    // Callout: título
+    const propCalloutTitle = document.getElementById('propCalloutTitle');
+    if (propCalloutTitle) {
+      propCalloutTitle.addEventListener('input', () => {
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { calloutTitle: propCalloutTitle.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    // Callout: color de borde
+    const propCalloutColor = document.getElementById('propCalloutColor');
+    const propCalloutColorSw = document.getElementById('propCalloutColorSw');
+    const propCalloutColorTxt = document.getElementById('propCalloutColorTxt');
+    if (propCalloutColor) {
+      propCalloutColor.addEventListener('input', () => {
+        if (propCalloutColorSw) propCalloutColorSw.style.background = propCalloutColor.value;
+        if (propCalloutColorTxt) propCalloutColorTxt.textContent = propCalloutColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { borderColor: propCalloutColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propCalloutColor.dispatchEvent(new Event('input'));
+    }
+
+    // Number heading: número
+    const propSectionNumber = document.getElementById('propSectionNumber');
+    if (propSectionNumber) {
+      propSectionNumber.addEventListener('input', () => {
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { sectionNumber: propSectionNumber.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    // Number heading: color de número
+    const propNumberColor = document.getElementById('propNumberColor');
+    const propNumberColorSw = document.getElementById('propNumberColorSw');
+    const propNumberColorTxt = document.getElementById('propNumberColorTxt');
+    if (propNumberColor) {
+      propNumberColor.addEventListener('input', () => {
+        if (propNumberColorSw) propNumberColorSw.style.background = propNumberColor.value;
+        if (propNumberColorTxt) propNumberColorTxt.textContent = propNumberColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { numberColor: propNumberColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propNumberColor.dispatchEvent(new Event('input'));
+    }
   });
 </script>
 @endsection

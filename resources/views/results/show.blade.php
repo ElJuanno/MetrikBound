@@ -95,6 +95,55 @@
             </p>
         </div>
     @else
+        {{-- ── Tabla de respondentes registrados ── --}}
+        @php
+            $hasRegistered = $responses->contains(fn($r) => $r->user_id !== null || !empty($r->meta_json['user_email']));
+        @endphp
+
+        @if($hasRegistered)
+        <div style="background:white;border-radius:16px;padding:28px;margin-bottom:28px;border:1px solid rgba(15,23,42,.08);box-shadow:0 4px 16px rgba(15,23,42,.04);">
+            <h3 style="font-size:17px;font-weight:800;color:#0f172a;margin:0 0 18px 0;display:flex;align-items:center;gap:8px;">
+                <span style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                Respondentes registrados
+            </h3>
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    <thead>
+                        <tr style="border-bottom:2px solid rgba(15,23,42,.06);">
+                            <th style="text-align:left;padding:10px 14px;font-weight:800;color:#64748b;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">#</th>
+                            <th style="text-align:left;padding:10px 14px;font-weight:800;color:#64748b;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Nombre</th>
+                            <th style="text-align:left;padding:10px 14px;font-weight:800;color:#64748b;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Correo</th>
+                            <th style="text-align:left;padding:10px 14px;font-weight:800;color:#64748b;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($responses as $resp)
+                            @php
+                                $rName  = $resp->user?->name  ?? ($resp->meta_json['user_name']  ?? null);
+                                $rEmail = $resp->user?->email ?? ($resp->meta_json['user_email'] ?? null);
+                            @endphp
+                            @if($rName || $rEmail)
+                            <tr style="border-bottom:1px solid rgba(15,23,42,.04);" onmouseover="this.style.background='rgba(99,102,241,.03)'" onmouseout="this.style.background='transparent'">
+                                <td style="padding:12px 14px;color:#94a3b8;font-weight:700;">{{ $loop->iteration }}</td>
+                                <td style="padding:12px 14px;">
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div style="width:32px;height:32px;background:linear-gradient(135deg,rgba(99,102,241,.14),rgba(139,92,246,.10));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#6366f1;flex-shrink:0;">{{ strtoupper(substr($rName ?? '?', 0, 1)) }}</div>
+                                        <span style="font-weight:700;color:#0f172a;">{{ $rName ?? '—' }}</span>
+                                    </div>
+                                </td>
+                                <td style="padding:12px 14px;color:#475569;">{{ $rEmail ?? '—' }}</td>
+                                <td style="padding:12px 14px;color:#94a3b8;font-size:13px;">{{ $resp->completed_at ? $resp->completed_at->format('d/m/Y H:i') : '—' }}</td>
+                            </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
+
         <!-- Results by Question -->
         @foreach($stats as $stat)
             <div style="

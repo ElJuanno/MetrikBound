@@ -18,6 +18,7 @@ import {
   dom,
   fillFontsAndSizes,
   pickImageForBlock,
+  rebuildBlock,
   renderCanvas,
   selectBlockById,
 } from './render';
@@ -755,10 +756,12 @@ function init() {
   // Exponer funciones globalmente para el código de estilos
   window.updateBlock = updateBlock;
   window.renderCanvas = renderCanvas;
+  window.rebuildBlock = rebuildBlock;
   window.selectBlockById = selectBlockById;
   window.addBlockToStore = addBlockToStore;
   window.createBlockModel = createBlockModel;
   window.createBlockInDatabase = createBlockInDatabase;
+  window.getSelectedBlock = getSelectedBlock;
 }
 
 document.addEventListener('DOMContentLoaded', init);

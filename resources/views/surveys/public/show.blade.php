@@ -1,10 +1,253 @@
-@if($survey->response_mode === 'anonymous')
-    @extends('layouts.public')
-@else
-    @extends('layouts.app')
-@endif
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $survey->title }} — MetrikBound</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
 
-@section('content')
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99,102,241,.18), transparent 60%),
+                radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(139,92,246,.14), transparent 55%),
+                radial-gradient(ellipse 60% 80% at 50% 100%, rgba(34,211,238,.10), transparent 60%),
+                linear-gradient(160deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #1e1b4b 100%);
+            background-attachment: fixed;
+        }
+
+        .survey-wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 48px 20px 80px;
+        }
+
+        /* Marca de agua */
+        .watermark {
+            position: fixed;
+            bottom: 18px;
+            right: 24px;
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(255,255,255,.28);
+            letter-spacing: .04em;
+            pointer-events: none;
+            user-select: none;
+            z-index: 100;
+        }
+
+        /* Hoja */
+        .survey-sheet {
+            position: relative;
+            width: 794px;
+            min-height: 1123px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.06),
+                0 32px 80px rgba(0,0,0,.45),
+                0 8px 24px rgba(0,0,0,.25);
+            overflow: visible;
+            padding-bottom: 60px;
+        }
+
+        /* Marca de agua en la hoja */
+        .sheet-watermark {
+            position: absolute;
+            bottom: 18px;
+            right: 24px;
+            font-size: 11px;
+            font-weight: 700;
+            color: rgba(15,23,42,.12);
+            letter-spacing: .06em;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Botón enviar */
+        .submit-wrap {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(99,102,241,.40);
+            transition: .18s ease;
+            letter-spacing: .02em;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(99,102,241,.50);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Alertas */
+        .alert {
+            width: 794px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: rgba(220,252,231,.95);
+            color: #166534;
+            border: 1px solid rgba(34,197,94,.25);
+        }
+
+        .alert-error {
+            background: rgba(254,226,226,.95);
+            color: #991b1b;
+            border: 1px solid rgba(239,68,68,.25);
+        }
+
+        /* Inputs interactivos */
+        .q-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid rgba(15,23,42,.12);
+            border-radius: 12px;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            background: linear-gradient(180deg, #f8fafc, #fff);
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+        .q-input:focus {
+            border-color: rgba(99,102,241,.40);
+            box-shadow: 0 0 0 3px rgba(99,102,241,.10);
+        }
+
+        .q-select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid rgba(15,23,42,.12);
+            border-radius: 12px;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color .15s;
+        }
+
+        .q-select:focus {
+            border-color: rgba(99,102,241,.40);
+            box-shadow: 0 0 0 3px rgba(99,102,241,.10);
+        }
+
+        .yesno-btn {
+            flex: 1;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all .18s;
+            user-select: none;
+        }
+
+        .yesno-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,.10);
+        }
+
+        .yesno-btn.yes {
+            border: 2px solid rgba(34,197,94,.25);
+            color: #166534;
+            background: linear-gradient(135deg, rgba(34,197,94,.08), rgba(34,197,94,.04));
+        }
+
+        .yesno-btn.no {
+            border: 2px solid rgba(239,68,68,.25);
+            color: #991b1b;
+            background: linear-gradient(135deg, rgba(239,68,68,.08), rgba(239,68,68,.04));
+        }
+
+        .yesno-btn input:checked ~ span,
+        .yesno-btn.selected {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+            border-color: transparent !important;
+            color: #fff !important;
+            box-shadow: 0 4px 14px rgba(99,102,241,.35);
+        }
+
+        .scale-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid rgba(15,23,42,.12);
+            border-radius: 10px;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 13px;
+            transition: all .15s;
+        }
+
+        .scale-label:hover {
+            border-color: rgba(99,102,241,.35);
+            background: rgba(99,102,241,.06);
+        }
+
+        .scale-label input:checked + span {
+            /* handled via JS */
+        }
+
+        .scale-label.selected {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(99,102,241,.30);
+        }
+
+        .star-label {
+            cursor: pointer;
+            transition: transform .12s;
+        }
+
+        .star-label:hover {
+            transform: scale(1.15);
+        }
+
+        @media (max-width: 860px) {
+            .survey-sheet, .alert { width: 100%; }
+            .survey-wrap { padding: 24px 12px 60px; }
+        }
+    </style>
+</head>
+<body>
+<div class="survey-wrap">
 <style>
 /* Estilos para botones interactivos */
 .yesno-btn:hover {
@@ -28,13 +271,8 @@
 
 @php
     $page = $state['page'] ?? [];
-    $pageWidth = 900;
-    $pageHeight = 1300;
-
-    if (($page['preset'] ?? null) === 'a4') {
-        $pageWidth = 900;
-        $pageHeight = 1273;
-    }
+    $pageWidth = 794;
+    $pageHeight = 1123;
 
     $bg = '#ffffff';
     if (($page['bg']['type'] ?? null) === 'solid' && !empty($page['bg']['color'])) {
@@ -42,24 +280,12 @@
     }
 @endphp
 
-<div class="container" style="max-width: 1200px; margin: 30px auto;">
-    <div style="margin-bottom: 18px;">
-        <h1 style="margin:0;">{{ $survey->title }}</h1>
-        @if(!empty($survey->description))
-            <p style="margin-top:6px; color:#6b7280;">{{ $survey->description }}</p>
-        @endif
-    </div>
-
     @if(session('success'))
-        <div style="padding:12px 16px; background:#dcfce7; color:#166534; border-radius:12px; margin-bottom:16px;">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     @if($errors->any())
-        <div style="padding:12px 16px; background:#fee2e2; color:#991b1b; border-radius:12px; margin-bottom:16px;">
-            {{ $errors->first() }}
-        </div>
+        <div class="alert alert-error">{{ $errors->first() }}</div>
     @endif
 
     <form action="{{ route('surveys.public.submit', $survey->share_token) }}" method="POST">
@@ -68,17 +294,9 @@
             <input type="hidden" name="mode" value="{{ request()->get('mode') }}">
         @endif
 
-        <div style="
-            position: relative;
-            width: {{ $pageWidth }}px;
-            min-height: {{ $pageHeight }}px;
-            margin: 0 auto 20px auto;
-            background: {{ $bg }};
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(15,23,42,.10);
-            overflow: visible;
-            padding-bottom: 40px;
-        ">
+        <div class="survey-sheet" style="background:{{ $bg }};">
+            <!-- Marca de agua en la hoja -->
+            <div class="sheet-watermark">MetrikBound.com</div>
             @foreach($nodes as $i => $node)
                 @php
                     $kind = $node['kind'] ?? '';
@@ -163,15 +381,7 @@
                             name="{{ $inputName }}"
                             placeholder="{{ $props['placeholder'] ?? 'Escribe tu respuesta' }}"
                             {{ $required ? 'required' : '' }}
-                            style="
-                                width:100%;
-                                padding:12px 14px;
-                                border:1px solid rgba(15,23,42,.12);
-                                border-radius:14px;
-                                outline:none;
-                                font-size:{{ $fontSize }}px;
-                                background: linear-gradient(180deg, rgba(248,250,252,.95), rgba(255,255,255,.95));
-                            "
+                            class="q-input"
                         >
 
                     @elseif($kind === 'q_radio')
@@ -210,15 +420,7 @@
                         <select
                             name="{{ $inputName }}"
                             {{ $required ? 'required' : '' }}
-                            style="
-                                width:100%;
-                                padding:12px 14px;
-                                border:1px solid rgba(15,23,42,.12);
-                                border-radius:14px;
-                                outline:none;
-                                font-size:{{ $fontSize }}px;
-                                background: #fff;
-                            "
+                            class="q-select"
                         >
                             <option value="" disabled selected>Selecciona una opción</option>
                             @foreach($options as $option)
@@ -235,14 +437,7 @@
                             type="date"
                             name="{{ $inputName }}"
                             {{ $required ? 'required' : '' }}
-                            style="
-                                width:100%;
-                                padding:12px 14px;
-                                border:1px solid rgba(15,23,42,.12);
-                                border-radius:14px;
-                                outline:none;
-                                font-size:{{ $fontSize }}px;
-                            "
+                            class="q-input"
                         >
 
                     @elseif($kind === 'q_scale')
@@ -257,19 +452,7 @@
 
                         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
                             @for($r = $min; $r <= $max; $r++)
-                                <label style="
-                                    display:flex;
-                                    align-items:center;
-                                    justify-content:center;
-                                    width:34px;
-                                    height:34px;
-                                    border:1px solid rgba(15,23,42,.12);
-                                    border-radius:12px;
-                                    background:#fff;
-                                    cursor:pointer;
-                                    font-size:{{ $fontSize }}px;
-                                    transition: all 0.2s;
-                                ">
+                                <label class="scale-label">
                                     <input type="radio" name="{{ $inputName }}" value="{{ $r }}" style="display:none;" {{ $required ? 'required' : '' }}>
                                     <span>{{ $r }}</span>
                                 </label>
@@ -282,39 +465,11 @@
                         </label>
 
                         <div style="display:flex; gap:10px; margin-top:10px;">
-                            <label class="yesno-btn" style="
-                                flex:1;
-                                height:44px;
-                                border-radius:12px;
-                                border:2px solid rgba(34,197,94,.20);
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-size:{{ $fontSize }}px;
-                                font-weight:800;
-                                color:#166534;
-                                background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.04));
-                                cursor:pointer;
-                                transition: all 0.2s;
-                            ">
+                            <label class="yesno-btn yes">
                                 <input type="radio" name="{{ $inputName }}" value="Sí" style="display:none;" {{ $required ? 'required' : '' }}>
                                 <span>Sí</span>
                             </label>
-                            <label class="yesno-btn" style="
-                                flex:1;
-                                height:44px;
-                                border-radius:12px;
-                                border:2px solid rgba(239,68,68,.20);
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-size:{{ $fontSize }}px;
-                                font-weight:800;
-                                color:#991b1b;
-                                background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.04));
-                                cursor:pointer;
-                                transition: all 0.2s;
-                            ">
+                            <label class="yesno-btn no">
                                 <input type="radio" name="{{ $inputName }}" value="No" style="display:none;" {{ $required ? 'required' : '' }}>
                                 <span>No</span>
                             </label>
@@ -331,7 +486,7 @@
 
                         <div style="display:flex; gap:6px; margin-top:10px; justify-content:center;">
                             @for($s = 1; $s <= $stars; $s++)
-                                <label style="cursor:pointer;">
+                                <label class="star-label">
                                     <input type="radio" name="{{ $inputName }}" value="{{ $s }}" style="display:none;" {{ $required ? 'required' : '' }}>
                                     <svg style="width:32px;height:32px;fill:#e5e7eb;transition:fill 0.2s;" class="star-icon" viewBox="0 0 24 24">
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -339,40 +494,6 @@
                                 </label>
                             @endfor
                         </div>
-
-                        <script>
-                            (function() {
-                                const container = document.currentScript.previousElementSibling;
-                                const labels = container.querySelectorAll('label');
-                                const stars = container.querySelectorAll('.star-icon');
-                                
-                                labels.forEach((label, index) => {
-                                    label.addEventListener('mouseenter', () => {
-                                        stars.forEach((star, i) => {
-                                            star.style.fill = i <= index ? '#fbbf24' : '#e5e7eb';
-                                        });
-                                    });
-                                    
-                                    label.addEventListener('click', () => {
-                                        stars.forEach((star, i) => {
-                                            star.style.fill = i <= index ? '#fbbf24' : '#e5e7eb';
-                                        });
-                                    });
-                                });
-                                
-                                container.addEventListener('mouseleave', () => {
-                                    const checked = container.querySelector('input:checked');
-                                    if (checked) {
-                                        const checkedIndex = Array.from(labels).findIndex(l => l.querySelector('input') === checked);
-                                        stars.forEach((star, i) => {
-                                            star.style.fill = i <= checkedIndex ? '#fbbf24' : '#e5e7eb';
-                                        });
-                                    } else {
-                                        stars.forEach(star => star.style.fill = '#e5e7eb');
-                                    }
-                                });
-                            })();
-                        </script>
 
                     @elseif($kind === 'q_numeric')
                         @php
@@ -388,22 +509,9 @@
                         @if($range <= 15)
                             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
                                 @for($n = $min; $n <= $max; $n++)
-                                    <label class="numeric-btn" style="
-                                        display:flex;
-                                        align-items:center;
-                                        justify-content:center;
-                                        width:36px;
-                                        height:36px;
-                                        border:1px solid rgba(15,23,42,.12);
-                                        border-radius:10px;
-                                        background:#fff;
-                                        cursor:pointer;
-                                        font-size:{{ $fontSize }}px;
-                                        font-weight:800;
-                                        transition: all 0.2s;
-                                    ">
+                                    <label class="scale-label numeric-btn">
                                         <input type="radio" name="{{ $inputName }}" value="{{ $n }}" style="display:none;" {{ $required ? 'required' : '' }}>
-                                        <span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:10px;">{{ $n }}</span>
+                                        <span>{{ $n }}</span>
                                     </label>
                                 @endfor
                             </div>
@@ -430,25 +538,82 @@
                     @endif
                 </div>
             @endforeach
-        </div>
+        </div>{{-- /survey-sheet --}}
 
-        <div style="text-align:center;">
-            <button
-                type="submit"
-                style="
-                    padding:14px 24px;
-                    border:none;
-                    border-radius:14px;
-                    background:#6366f1;
-                    color:#fff;
-                    font-weight:700;
-                    cursor:pointer;
-                    font-size:16px;
-                "
-            >
+        <div class="submit-wrap">
+            <button type="submit" class="submit-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 Enviar respuestas
             </button>
         </div>
     </form>
-</div>
-@endsection
+
+    <!-- Marca de agua flotante -->
+    <div class="watermark">MetrikBound.com</div>
+
+</div>{{-- /survey-wrap --}}
+
+<script>
+// Interactividad: scale, yesno, numeric, stars
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Scale / numeric: toggle selected class
+    document.querySelectorAll('.scale-label, .numeric-btn').forEach(label => {
+        label.addEventListener('click', () => {
+            const input = label.querySelector('input[type="radio"]');
+            if (!input) return;
+            const name = input.name;
+            document.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(r => {
+                r.closest('.scale-label, .numeric-btn')?.classList.remove('selected');
+            });
+            label.classList.add('selected');
+        });
+    });
+
+    // Yesno: toggle selected
+    document.querySelectorAll('.yesno-btn').forEach(label => {
+        label.addEventListener('click', () => {
+            const input = label.querySelector('input[type="radio"]');
+            if (!input) return;
+            const name = input.name;
+            document.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(r => {
+                r.closest('.yesno-btn')?.classList.remove('selected');
+            });
+            label.classList.add('selected');
+        });
+    });
+
+    // Stars: hover + click
+    document.querySelectorAll('.star-label').forEach((label, idx, all) => {
+        const input = label.querySelector('input[type="radio"]');
+        if (!input) return;
+        const name = input.name;
+        const group = Array.from(document.querySelectorAll(`input[name="${CSS.escape(name)}"]`))
+            .map(i => i.closest('.star-label'));
+
+        label.addEventListener('mouseenter', () => {
+            group.forEach((l, i) => {
+                const svg = l.querySelector('.star-icon');
+                if (svg) svg.style.fill = i <= idx ? '#fbbf24' : '#e5e7eb';
+            });
+        });
+
+        label.addEventListener('mouseleave', () => {
+            const checked = group.findIndex(l => l.querySelector('input')?.checked);
+            group.forEach((l, i) => {
+                const svg = l.querySelector('.star-icon');
+                if (svg) svg.style.fill = (checked >= 0 && i <= checked) ? '#fbbf24' : '#e5e7eb';
+            });
+        });
+
+        label.addEventListener('click', () => {
+            group.forEach((l, i) => {
+                const svg = l.querySelector('.star-icon');
+                if (svg) svg.style.fill = i <= idx ? '#fbbf24' : '#e5e7eb';
+            });
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -25,9 +25,9 @@ class ResultsController extends Controller
         // Verificar que el usuario sea dueño de la encuesta
         abort_unless($survey->user_id === auth()->id(), 403);
 
-        // Obtener todas las respuestas
+        // Obtener todas las respuestas con usuario relacionado
         $responses = Response::where('survey_id', $survey->id)
-            ->with('answers')
+            ->with(['answers', 'user'])
             ->orderBy('completed_at', 'desc')
             ->get();
 

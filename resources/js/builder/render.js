@@ -234,9 +234,157 @@ function buildBlockInnerHtml(block) {
   }
 
   if (block.kind === 'divider') {
+    const variant = block.props.dividerVariant || block.variant || 'simple';
+    const color = block.props.dividerColor || '#e2e8f0';
+    const thickness = block.props.dividerThickness || 2;
+    const label = block.props.html || '';
+
+    if (variant === 'double') {
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:6px 0;">
+          <div style="height:${thickness}px;border-radius:999px;background:${color};"></div>
+          <div style="height:${Math.max(1,thickness-1)}px;border-radius:999px;background:${color};opacity:.5;"></div>
+        </div>
+      `;
+    }
+
+    if (variant === 'dashed') {
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div style="padding:6px 0;">
+          <div style="height:${thickness}px;border-radius:999px;background:repeating-linear-gradient(90deg,${color} 0,${color} 10px,transparent 10px,transparent 18px);"></div>
+        </div>
+      `;
+    }
+
+    if (variant === 'gradient') {
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div style="padding:6px 0;">
+          <div style="height:${thickness}px;border-radius:999px;background:linear-gradient(90deg,transparent,${color},transparent);"></div>
+        </div>
+      `;
+    }
+
+    if (variant === 'text') {
+      const textColor = block.props.color || '#64748b';
+      const fontSize = block.props.fontSize || 13;
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:4px 0;">
+          <div style="flex:1;height:${thickness}px;background:${color};border-radius:999px;"></div>
+          <div class="editable" contenteditable="true" style="white-space:nowrap;font-size:${fontSize}px;font-weight:700;color:${textColor};letter-spacing:.04em;">${escapeHtml(label || 'Sección')}</div>
+          <div style="flex:1;height:${thickness}px;background:${color};border-radius:999px;"></div>
+        </div>
+      `;
+    }
+
+    if (variant === 'dots') {
+      const dotColor = block.props.dividerColor || '#94a3b8';
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 0;">
+          <div style="width:6px;height:6px;border-radius:50%;background:${dotColor};"></div>
+          <div style="width:6px;height:6px;border-radius:50%;background:${dotColor};opacity:.6;"></div>
+          <div style="width:6px;height:6px;border-radius:50%;background:${dotColor};opacity:.35;"></div>
+        </div>
+      `;
+    }
+
+    // simple (default)
     return `
       <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
-      <div style="height:2px;border-radius:999px;background:color-mix(in oklab, var(--line) 80%, transparent)"></div>
+      <div style="padding:6px 0;">
+        <div style="height:${thickness}px;border-radius:999px;background:${color};"></div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'highlight_box') {
+    const boxVariant = block.props.boxVariant || 'info';
+    const borderColor = block.props.borderColor || '#3b82f6';
+    const textColor = block.props.color || '#1e40af';
+    const bgColor = block.props.bg || '#eff6ff';
+    const fontSize = block.props.fontSize || 14;
+
+    const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', danger: '🚨' };
+    const icon = icons[boxVariant] || 'ℹ️';
+
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="border-left:4px solid ${borderColor};border-radius:0 12px 12px 0;background:${bgColor};padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:18px;line-height:1;flex-shrink:0;margin-top:1px;">${icon}</span>
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;color:${textColor};line-height:1.6;font-weight:500;flex:1;">${escapeHtml(getBlockText(block, 'Texto destacado aquí'))}</div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'quote') {
+    const quoteColor = block.props.quoteColor || '#6366f1';
+    const textColor = block.props.color || '#334155';
+    const fontSize = block.props.fontSize || 16;
+    const fontFamily = (FONT_LIST.find(f => f.k === (block.props.font || 'merriweather'))?.css) || 'Merriweather, serif';
+
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="border-left:4px solid ${quoteColor};padding:12px 20px;position:relative;">
+        <div style="position:absolute;top:-4px;left:14px;font-size:48px;line-height:1;color:${quoteColor};opacity:.25;font-family:Georgia,serif;pointer-events:none;">"</div>
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;color:${textColor};line-height:1.7;font-style:italic;font-family:${fontFamily};position:relative;z-index:1;">${escapeHtml(getBlockText(block, 'Escribe aquí tu cita o texto destacado.'))}</div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'badge') {
+    const badgeVariant = block.props.badgeVariant || 'pill';
+    const textColor = block.props.color || '#4f46e5';
+    const bgColor = block.props.bg || '#eef2ff';
+    const borderColor = block.props.borderColor || '#c7d2fe';
+    const fontSize = block.props.fontSize || 13;
+
+    const borderRadius = badgeVariant === 'solid' ? '10px' : '999px';
+    const border = badgeVariant === 'solid' ? 'none' : `1.5px solid ${borderColor}`;
+
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="display:inline-flex;align-items:center;justify-content:center;">
+        <div class="editable" contenteditable="true" style="display:inline-block;padding:6px 18px;border-radius:${borderRadius};border:${border};background:${bgColor};color:${textColor};font-size:${fontSize}px;font-weight:800;letter-spacing:.04em;white-space:nowrap;">${escapeHtml(getBlockText(block, 'Etiqueta'))}</div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'callout') {
+    const icon = block.props.calloutIcon || '💡';
+    const title = block.props.calloutTitle || 'Nota';
+    const borderColor = block.props.borderColor || '#6366f1';
+    const bgColor = block.props.bg || '#f8fafc';
+    const textColor = block.props.color || '#1e293b';
+    const fontSize = block.props.fontSize || 14;
+
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="border:1.5px solid ${borderColor};border-radius:14px;background:${bgColor};overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid ${borderColor}20;background:${borderColor}10;">
+          <span style="font-size:18px;line-height:1;">${icon}</span>
+          <span style="font-size:13px;font-weight:800;color:${borderColor};">${escapeHtml(title)}</span>
+        </div>
+        <div class="editable" contenteditable="true" style="padding:12px 14px;font-size:${fontSize}px;color:${textColor};line-height:1.65;">${escapeHtml(getBlockText(block, 'Escribe aquí el contenido del callout.'))}</div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'number_heading') {
+    const num = block.props.sectionNumber || '01';
+    const numColor = block.props.numberColor || '#6366f1';
+    const textColor = block.props.color || '#0f172a';
+    const fontSize = block.props.fontSize || 18;
+
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="font-size:42px;font-weight:900;line-height:1;color:${numColor};opacity:.25;letter-spacing:-2px;flex-shrink:0;font-variant-numeric:tabular-nums;">${escapeHtml(num)}</div>
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;font-weight:800;color:${textColor};line-height:1.25;flex:1;">${escapeHtml(getBlockText(block, 'Título de sección'))}</div>
+      </div>
     `;
   }
 
@@ -436,17 +584,150 @@ export function renderBlockElement(block) {
 export function renderCanvas() {
   if (!dom.paper) return;
 
-  dom.paper.querySelectorAll('.block').forEach((b) => b.remove());
+  const state = getState();
+  const storeBlocks = state.blocks;
+  const selectedId = getSelectedId();
 
-  getState().blocks.forEach((block) => {
-    const el = renderBlockElement(block);
-    dom.paper.appendChild(el);
+  // Construir mapa de elementos existentes en el DOM
+  const existingEls = new Map();
+  dom.paper.querySelectorAll('.block[data-id]').forEach((el) => {
+    existingEls.set(el.dataset.id, el);
   });
 
+  // Construir set de ids que deben existir
+  const storeIds = new Set(storeBlocks.map((b) => b.id));
+
+  // 1. Eliminar bloques que ya no están en el store
+  existingEls.forEach((el, id) => {
+    if (!storeIds.has(id)) {
+      el.remove();
+      existingEls.delete(id);
+    }
+  });
+
+  // 2. Agregar o actualizar bloques
+  storeBlocks.forEach((block) => {
+    const existing = existingEls.get(block.id);
+
+    if (!existing) {
+      // Bloque nuevo: crear y agregar
+      const el = renderBlockElement(block);
+      dom.paper.appendChild(el);
+    } else {
+      // Bloque existente: actualizar solo propiedades de layout sin re-crear el DOM
+      _patchBlockEl(existing, block);
+    }
+
+    // Sincronizar clase selected
+    const el = existingEls.get(block.id) || dom.paper.querySelector(`.block[data-id="${block.id}"]`);
+    if (el) {
+      el.classList.toggle('selected', block.id === selectedId);
+    }
+  });
+}
+
+/**
+ * Actualiza un bloque existente en el DOM reconstruyendo su innerHTML completo.
+ * Usar cuando cambian props que afectan la estructura interna (texto, opciones, variante).
+ */
+export function rebuildBlock(id) {
+  if (!dom.paper) return;
+  const block = getBlockById(id);
+  if (!block) return;
+
+  const el = dom.paper.querySelector(`.block[data-id="${id}"]`);
+  if (!el) {
+    // No existe aún, renderCanvas lo creará
+    renderCanvas();
+    return;
+  }
+
+  // Reconstruir innerHTML preservando el elemento
+  el.innerHTML = `${buildBlockInnerHtml(block)}<div class="resizer" title="Redimensionar"></div>`;
+
+  // Re-aplicar todos los estilos
+  el.style.left = `${block.x}px`;
+  el.style.top = `${block.y}px`;
+  el.style.width = `${block.w}px`;
+  el.style.zIndex = String(block.z || 1);
+  el.style.textAlign = block.props.align || 'left';
+
+  const autoHeightKinds = ['q_radio', 'q_check', 'q_select'];
+  el.style.height = autoHeightKinds.includes(block.kind)
+    ? 'auto'
+    : (block.h ? `${block.h}px` : 'auto');
+
+  if (block.props.color) {
+    el.style.color = block.props.color;
+  } else {
+    el.style.removeProperty('color');
+  }
+
+  if (block.props.bg) {
+    el.style.background = block.props.bg;
+  } else {
+    el.style.removeProperty('background');
+  }
+
+  applyFont(el, block.props.font || 'system');
+  applyFontSize(el, block);
+  applyAlpha(el, block.props.alpha ?? 100);
+  toggleRequiredUI(el, block);
+
+  if (block.kind === 'q_radio' || block.kind === 'q_check') {
+    renderOptions(el, block);
+  }
+  if (block.kind === 'q_select') {
+    renderSelect(el, block);
+  }
+  if (block.kind === 'img') {
+    renderImage(el, block.props.img);
+  }
+
+  // Restaurar modo de vista
+  const savedMode = localStorage.getItem('builderViewMode') || 'block';
+  if (savedMode === 'clean') el.classList.add('clean-view');
+
+  // Restaurar selección
   const selectedId = getSelectedId();
-  if (selectedId) {
-    const selectedEl = dom.paper.querySelector(`.block[data-id="${selectedId}"]`);
-    if (selectedEl) selectedEl.classList.add('selected');
+  el.classList.toggle('selected', block.id === selectedId);
+}
+
+/** Parche ligero: solo actualiza layout/estilos sin tocar innerHTML */
+function _patchBlockEl(el, block) {
+  el.style.left = `${block.x}px`;
+  el.style.top = `${block.y}px`;
+  el.style.width = `${block.w}px`;
+  el.style.zIndex = String(block.z || 1);
+  el.style.textAlign = block.props.align || 'left';
+
+  const autoHeightKinds = ['q_radio', 'q_check', 'q_select'];
+  el.style.height = autoHeightKinds.includes(block.kind)
+    ? 'auto'
+    : (block.h ? `${block.h}px` : 'auto');
+
+  if (block.props.color) {
+    el.style.color = block.props.color;
+  } else {
+    el.style.removeProperty('color');
+  }
+
+  if (block.props.bg) {
+    el.style.background = block.props.bg;
+  } else {
+    el.style.removeProperty('background');
+  }
+
+  applyFont(el, block.props.font || 'system');
+  applyFontSize(el, block);
+  applyAlpha(el, block.props.alpha ?? 100);
+  toggleRequiredUI(el, block);
+
+  if (block.kind === 'q_radio' || block.kind === 'q_check') {
+    renderOptions(el, block);
+  }
+  if (block.kind === 'q_select') {
+    renderSelect(el, block);
   }
 }
 
@@ -509,6 +790,55 @@ export function selectBlockById(id) {
     if (dom.propOptColorWrap) dom.propOptColorWrap.style.display = 'none';
     if (dom.propOptions) dom.propOptions.value = '';
   }
+
+  // Paneles específicos de nuevos bloques decorativos
+  const dividerWrap = document.getElementById('propDividerWrap');
+  const highlightWrap = document.getElementById('propHighlightWrap');
+  const quoteWrap = document.getElementById('propQuoteWrap');
+  const calloutWrap = document.getElementById('propCalloutWrap');
+  const numberWrap = document.getElementById('propNumberWrap');
+
+  if (dividerWrap) dividerWrap.style.display = block.kind === 'divider' ? 'block' : 'none';
+  if (highlightWrap) highlightWrap.style.display = block.kind === 'highlight_box' ? 'block' : 'none';
+  if (quoteWrap) quoteWrap.style.display = block.kind === 'quote' ? 'block' : 'none';
+  if (calloutWrap) calloutWrap.style.display = block.kind === 'callout' ? 'block' : 'none';
+  if (numberWrap) numberWrap.style.display = block.kind === 'number_heading' ? 'block' : 'none';
+
+  // Sincronizar valores de controles específicos
+  if (block.kind === 'divider') {
+    const dc = document.getElementById('propDividerColor');
+    const dt = document.getElementById('propDividerThickness');
+    const dtv = document.getElementById('propDividerThicknessVal');
+    if (dc) { dc.value = block.props.dividerColor || '#e2e8f0'; dc.dispatchEvent(new Event('input')); }
+    if (dt) { dt.value = String(block.props.dividerThickness || 2); }
+    if (dtv) dtv.textContent = `${block.props.dividerThickness || 2}px`;
+  }
+
+  if (block.kind === 'highlight_box') {
+    const bc = document.getElementById('propBorderColor');
+    if (bc) { bc.value = block.props.borderColor || '#3b82f6'; bc.dispatchEvent(new Event('input')); }
+  }
+
+  if (block.kind === 'quote') {
+    const qc = document.getElementById('propQuoteColor');
+    if (qc) { qc.value = block.props.quoteColor || '#6366f1'; qc.dispatchEvent(new Event('input')); }
+  }
+
+  if (block.kind === 'callout') {
+    const ci = document.getElementById('propCalloutIcon');
+    const ct = document.getElementById('propCalloutTitle');
+    const cc = document.getElementById('propCalloutColor');
+    if (ci) ci.value = block.props.calloutIcon || '💡';
+    if (ct) ct.value = block.props.calloutTitle || 'Nota';
+    if (cc) { cc.value = block.props.borderColor || '#6366f1'; cc.dispatchEvent(new Event('input')); }
+  }
+
+  if (block.kind === 'number_heading') {
+    const sn = document.getElementById('propSectionNumber');
+    const nc = document.getElementById('propNumberColor');
+    if (sn) sn.value = block.props.sectionNumber || '01';
+    if (nc) { nc.value = block.props.numberColor || '#6366f1'; nc.dispatchEvent(new Event('input')); }
+  }
 }
 
 export function bindInspector() {
@@ -518,11 +848,10 @@ export function bindInspector() {
       if (!block) return;
 
       updateBlock(block.id, {
-        props: {
-          html: dom.propText.value,
-        },
+        props: { html: dom.propText.value },
       });
 
+      // Solo actualizar el editable directamente, sin re-render
       const editable = dom.paper?.querySelector(`.block[data-id="${block.id}"] .editable`);
       if (editable) editable.innerText = dom.propText.value;
 
@@ -535,14 +864,8 @@ export function bindInspector() {
     dom.propFont.addEventListener('change', () => {
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          font: dom.propFont.value,
-        },
-      });
-
-      renderCanvas();
+      updateBlock(block.id, { props: { font: dom.propFont.value } });
+      rebuildBlock(block.id);
       selectBlockById(block.id);
       window.builderAutosave?.();
       window.builderPersistSelected?.();
@@ -553,14 +876,8 @@ export function bindInspector() {
     dom.propSize.addEventListener('change', () => {
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          fontSize: Number(dom.propSize.value),
-        },
-      });
-
-      renderCanvas();
+      updateBlock(block.id, { props: { fontSize: Number(dom.propSize.value) } });
+      rebuildBlock(block.id);
       selectBlockById(block.id);
       window.builderAutosave?.();
       window.builderPersistSelected?.();
@@ -571,15 +888,9 @@ export function bindInspector() {
     dom.propColor.addEventListener('input', () => {
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          color: dom.propColor.value,
-        },
-      });
-
+      updateBlock(block.id, { props: { color: dom.propColor.value } });
       setColorChip('propColorBtn', 'propColorSw', 'propColorTxt', dom.propColor.value);
-      renderCanvas();
+      rebuildBlock(block.id);
       selectBlockById(block.id);
       window.builderAutosave?.();
       window.builderPersistSelected?.();
@@ -590,15 +901,9 @@ export function bindInspector() {
     dom.propBg.addEventListener('input', () => {
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          bg: dom.propBg.value,
-        },
-      });
-
+      updateBlock(block.id, { props: { bg: dom.propBg.value } });
       setColorChip('propBgBtn', 'propBgSw', 'propBgTxt', dom.propBg.value);
-      renderCanvas();
+      rebuildBlock(block.id);
       selectBlockById(block.id);
       window.builderAutosave?.();
       window.builderPersistSelected?.();
@@ -609,16 +914,11 @@ export function bindInspector() {
     dom.propAlpha.addEventListener('input', () => {
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          alpha: Number(dom.propAlpha.value),
-        },
-      });
-
+      updateBlock(block.id, { props: { alpha: Number(dom.propAlpha.value) } });
       if (dom.propAlphaVal) dom.propAlphaVal.textContent = `${dom.propAlpha.value}%`;
-      renderCanvas();
-      selectBlockById(block.id);
+      // Alpha solo afecta opacity — parche directo sin rebuild
+      const el = dom.paper?.querySelector(`.block[data-id="${block.id}"]`);
+      if (el) applyAlpha(el, Number(dom.propAlpha.value));
       window.builderAutosave?.();
       window.builderPersistSelected?.();
     });
@@ -628,26 +928,20 @@ export function bindInspector() {
     dom.propRequired.addEventListener('change', () => {
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          required: dom.propRequired.checked,
-        },
-      });
-
-      renderCanvas();
-      selectBlockById(block.id);
+      updateBlock(block.id, { props: { required: dom.propRequired.checked } });
+      // Solo toggle el tag de requerida
+      const el = dom.paper?.querySelector(`.block[data-id="${block.id}"]`);
+      if (el) toggleRequiredUI(el, getBlockById(block.id));
       window.builderAutosave?.();
       window.builderPersistSelected?.();
     });
   }
 
   if (dom.propOptions) {
+    // Permitir Enter y Backspace libremente — solo detener propagación para
+    // que el keydown del builder (Delete = borrar bloque) no interfiera
     dom.propOptions.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.stopPropagation();
-        // No prevenir default para permitir nueva línea
-      }
+      e.stopPropagation();
     });
 
     dom.propOptions.addEventListener('input', () => {
@@ -655,23 +949,51 @@ export function bindInspector() {
       if (!block) return;
       if (!['q_radio', 'q_check', 'q_select'].includes(block.kind)) return;
 
+      // Dividir por líneas pero NO filtrar vacías todavía —
+      // el usuario puede estar en medio de escribir una nueva línea
+      const lines = dom.propOptions.value.split(/\r?\n/);
+
+      // Solo guardar las líneas que tienen contenido (sin trim agresivo)
+      // pero preservar el estado del textarea tal cual
+      const arr = lines.map((s) => s.trim()).filter((s) => s.length > 0);
+
+      // Si no hay ninguna opción con contenido, no forzar nada —
+      // dejar el bloque con las opciones anteriores hasta que el usuario escriba algo
+      if (arr.length === 0) return;
+
+      updateBlock(block.id, {
+        h: null,
+        props: { options: arr },
+      });
+
+      rebuildBlock(block.id);
+      // No llamar selectBlockById aquí para no mover el foco del textarea
+      window.builderAutosave?.();
+      window.builderPersistSelected?.();
+    });
+
+    // Al perder el foco: si el textarea quedó vacío, restaurar las opciones actuales
+    dom.propOptions.addEventListener('blur', () => {
+      const block = getSelectedBlock();
+      if (!block) return;
+      if (!['q_radio', 'q_check', 'q_select'].includes(block.kind)) return;
+
       const arr = dom.propOptions.value
         .split(/\r?\n/)
         .map((s) => s.trim())
-        .filter(Boolean);
+        .filter((s) => s.length > 0);
 
-      // Permitir cualquier cantidad de opciones, mínimo 1
-      updateBlock(block.id, {
-        h: null,
-        props: {
-          options: arr.length ? arr : ['Opción 1'],
-        },
-      });
-
-      renderCanvas();
-      selectBlockById(block.id);
-      window.builderAutosave?.();
-      window.builderPersistSelected?.();
+      if (arr.length === 0) {
+        // Restaurar lo que tenía el bloque
+        const current = block.props?.options;
+        if (Array.isArray(current) && current.length > 0) {
+          dom.propOptions.value = current.join('\n');
+        } else {
+          dom.propOptions.value = 'Opción 1';
+          updateBlock(block.id, { props: { options: ['Opción 1'] } });
+          rebuildBlock(block.id);
+        }
+      }
     });
   }
 
@@ -680,15 +1002,9 @@ export function bindInspector() {
       const block = getSelectedBlock();
       if (!block) return;
       if (!['q_radio', 'q_check', 'q_select'].includes(block.kind)) return;
-
-      updateBlock(block.id, {
-        props: {
-          optColor: dom.propOptColor.value,
-        },
-      });
-
+      updateBlock(block.id, { props: { optColor: dom.propOptColor.value } });
       setColorChip('propOptColorBtn', 'propOptColorSw', 'propOptColorTxt', dom.propOptColor.value);
-      renderCanvas();
+      rebuildBlock(block.id);
       selectBlockById(block.id);
       window.builderAutosave?.();
       window.builderPersistSelected?.();
@@ -699,18 +1015,12 @@ export function bindInspector() {
     dom.propAlign.addEventListener('click', (e) => {
       const btn = e.target.closest('button');
       if (!btn) return;
-
       const block = getSelectedBlock();
       if (!block) return;
-
-      updateBlock(block.id, {
-        props: {
-          align: btn.dataset.align,
-        },
-      });
-
-      renderCanvas();
-      selectBlockById(block.id);
+      updateBlock(block.id, { props: { align: btn.dataset.align } });
+      // Alineación: solo cambiar textAlign directamente
+      const el = dom.paper?.querySelector(`.block[data-id="${block.id}"]`);
+      if (el) el.style.textAlign = btn.dataset.align;
       window.builderAutosave?.();
       window.builderPersistSelected?.();
     });
@@ -731,13 +1041,8 @@ export function pickImageForBlock(blockId) {
 
     const reader = new FileReader();
     reader.onload = () => {
-      updateBlock(block.id, {
-        props: {
-          img: reader.result,
-        },
-      });
-
-      renderCanvas();
+      updateBlock(block.id, { props: { img: reader.result } });
+      rebuildBlock(block.id);
       selectBlockById(block.id);
       window.builderAutosave?.();
       window.builderPersistSelected?.();

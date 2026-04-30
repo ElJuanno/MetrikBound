@@ -17,8 +17,10 @@ public function show(string $token, Request $request)
     
     $mode = $request->get('mode');
     
-    // Si no está en modo preview/anonymous, solo mostrar publicadas
-    if (!in_array($mode, ['anon', 'anonymous'], true)) {
+    // Modos especiales que no requieren status=published
+    $previewModes = ['anon', 'anonymous', 'registered'];
+    
+    if (!in_array($mode, $previewModes, true)) {
         $query->where('status', 'published');
     }
     
@@ -34,9 +36,25 @@ public function show(string $token, Request $request)
 
     // Si el modo es 'registered' o la encuesta requiere registro, verificar autenticación
     if (($mode === 'registered' || $survey->response_mode === 'registered') && !auth()->check()) {
-        // Guardar la URL completa para volver después del registro
-        session()->put('intended_survey', $request->fullUrl());
-        return redirect()->route('register')->with('message', 'Debes crear una cuenta para responder esta encuesta');
+        // Guardar la URL de la encuesta en sesión para redirigir después del login
+        session()->put('url.intended', $request->fullUrl());
+
+        // Mostrar vista previa con bloqueo en lugar de redirigir al login
+        $state = is_array($survey->builder_state)
+            ? $survey->builder_state
+            : json_decode($survey->builder_state ?? '{}', true);
+
+        $blocks = $state['blocks'] ?? [];
+        $nodes = [];
+        foreach ($blocks as $originalIndex => $block) {
+            $block['originalIndex'] = $originalIndex;
+            $nodes[] = $block;
+        }
+        usort($nodes, function ($a, $b) {
+            return [$a['y'] ?? 0, $a['x'] ?? 0] <=> [$b['y'] ?? 0, $b['x'] ?? 0];
+        });
+
+        return view('surveys.public.registered', compact('survey', 'state', 'nodes'));
     }
 
     $state = is_array($survey->builder_state)
@@ -69,9 +87,10 @@ public function show(string $token, Request $request)
     {
         $query = Survey::where('share_token', $token);
         
-        // Si no está en modo preview/anonymous, solo permitir publicadas
+        // Modos especiales que no requieren status=published
         $mode = $request->get('mode');
-        if (!in_array($mode, ['anon', 'anonymous'], true)) {
+        $previewModes = ['anon', 'anonymous', 'registered'];
+        if (!in_array($mode, $previewModes, true)) {
             $query->where('status', 'published');
         }
         
@@ -125,14 +144,23 @@ public function show(string $token, Request $request)
 
         DB::transaction(function () use ($survey, $request, $answersInput, $blocks) {
             \Log::info('Starting transaction', ['answersInput' => $answersInput]);
-            
+
+            // Construir meta con info del usuario si está autenticado
+            $meta = [];
+            if (auth()->check()) {
+                $user = auth()->user();
+                $meta['user_name']  = $user->name ?? null;
+                $meta['user_email'] = $user->email ?? null;
+            }
+
             $response = Response::create([
-                'survey_id' => $survey->id,
-                'user_id' => auth()->check() ? auth()->id() : null,
+                'survey_id'       => $survey->id,
+                'user_id'         => auth()->check() ? auth()->id() : null,
                 'anonymous_token' => auth()->check() ? null : Str::random(40),
-                'ip_hash' => hash('sha256', $request->ip()),
-                'user_agent' => $request->userAgent(),
-                'completed_at' => now(),
+                'ip_hash'         => hash('sha256', $request->ip()),
+                'user_agent'      => $request->userAgent(),
+                'completed_at'    => now(),
+                'meta_json'       => !empty($meta) ? $meta : null,
             ]);
 
             \Log::info('Response created', ['response_id' => $response->id]);
