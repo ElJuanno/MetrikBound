@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys.index');
     Route::get('/surveys/create', [SurveyController::class, 'create'])->name('surveys.create');
     Route::post('/surveys', [SurveyController::class, 'store'])->name('surveys.store');
+    Route::post('/surveys/from-template', [SurveyController::class, 'createFromTemplate'])->name('surveys.createFromTemplate');
     Route::middleware(['auth'])->group(function () {
     Route::post('/surveys/{survey}/publish', [SurveyController::class, 'publish'])
         ->name('surveys.publish');

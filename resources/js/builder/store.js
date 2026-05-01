@@ -106,10 +106,48 @@ export function removeBlock(id) {
   return true;
 }
 
+export function migrateBuilderState(state) {
+  if (!state) return null;
+
+  const migrated = clone(state);
+
+  // Ensure version
+  if (!migrated.v) {
+    migrated.v = 1;
+  }
+
+  // Migrate from v1 to v2
+  if (migrated.v === 1) {
+    // Add default visualStyle to question blocks
+    if (Array.isArray(migrated.blocks)) {
+      migrated.blocks.forEach((block) => {
+        if (['q_text', 'q_radio', 'q_check', 'q_yesno'].includes(block.kind)) {
+          if (!block.props) block.props = {};
+          if (!block.props.visualStyle) {
+            block.props.visualStyle = 'modern';
+          }
+        }
+      });
+    }
+
+    // Ensure page object exists
+    if (!migrated.page) {
+      migrated.page = clone(DEFAULT_PAGE_STATE);
+    }
+
+    // Update version
+    migrated.v = 2;
+  }
+
+  return migrated;
+}
+
 export function replaceState(newState) {
-  BuilderStore.state.v = newState?.v || 2;
-  BuilderStore.state.page = newState?.page ? clone(newState.page) : clone(DEFAULT_PAGE_STATE);
-  BuilderStore.state.blocks = Array.isArray(newState?.blocks) ? clone(newState.blocks) : [];
+  const migratedState = migrateBuilderState(newState);
+  
+  BuilderStore.state.v = migratedState?.v || 2;
+  BuilderStore.state.page = migratedState?.page ? clone(migratedState.page) : clone(DEFAULT_PAGE_STATE);
+  BuilderStore.state.blocks = Array.isArray(migratedState?.blocks) ? clone(migratedState.blocks) : [];
   BuilderStore.state.selectedId = null;
   syncZCounterFromBlocks();
 }

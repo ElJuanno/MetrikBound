@@ -18,7 +18,7 @@ export function createBlockModel(kind, x = 80, y = 120) {
 
   const model = deepClone(defaults);
 
-  return {
+  const newBlock = {
     id: uid(),            // id local del frontend
     dbId: null,           // id real de survey_blocks
     questionId: null,     // id real de questions
@@ -31,18 +31,10 @@ export function createBlockModel(kind, x = 80, y = 120) {
     h: model.h ?? null,
     locked: false,
     z: nextZ(),
-    props: {
-      html: model.props?.html ?? null,
-      align: model.props?.align ?? 'left',
-      required: model.props?.required ?? false,
-      options: model.props?.options ?? null,
-      font: model.props?.font ?? 'system',
-      fontSize: model.props?.fontSize ?? 14,
-      color: model.props?.color ?? '',
-      bg: model.props?.bg ?? '',
-      alpha: model.props?.alpha ?? 100,
-      optColor: model.props?.optColor ?? '',
-      img: model.props?.img ?? null,
-    },
+    props: deepClone(model.props || {}),
   };
+
+  console.log('🔧 createBlockModel:', kind, newBlock);
+  
+  return newBlock;
 }

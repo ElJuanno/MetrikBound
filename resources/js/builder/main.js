@@ -333,6 +333,10 @@ async function duplicateBlock(localBlockId) {
 
 function bindTools() {
   document.querySelectorAll('.tool').forEach((tool) => {
+    // Skip if already bound
+    if (tool.dataset.dragBound === 'true') return;
+    tool.dataset.dragBound = 'true';
+    
     tool.setAttribute('draggable', 'true');
 
     tool.addEventListener('dragstart', (e) => {
@@ -574,6 +578,56 @@ function bindBlockInteractions() {
       return;
     }
 
+    // Handle de rotación
+    if (e.target.classList.contains('rotateHandle')) {
+      if (block.locked) return;
+
+      activeId = id;
+      mode = 'rotate';
+      
+      const rect = blockEl.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+      const currentRotation = block.props?.rotation || 0;
+
+      setSelectedId(id);
+      selectBlockById(id);
+
+      const onRotate = (moveEvent) => {
+        const currentBlock = getBlockById(id);
+        if (!currentBlock) return;
+
+        const angle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
+        let newRotation = currentRotation + (angle - startAngle);
+        
+        // Normalizar entre 0 y 360
+        newRotation = ((newRotation % 360) + 360) % 360;
+        
+        updateBlock(id, { 
+          props: { 
+            ...currentBlock.props,
+            rotation: Math.round(newRotation) 
+          } 
+        });
+        rebuildBlock(id);
+      };
+
+      const onRotateEnd = () => {
+        document.removeEventListener('mousemove', onRotate);
+        document.removeEventListener('mouseup', onRotateEnd);
+        persistBlockDebounced(id, 250);
+        autosaveDebounced();
+      };
+
+      document.addEventListener('mousemove', onRotate);
+      document.addEventListener('mouseup', onRotateEnd);
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
     if (block.locked) {
       setSelectedId(id);
       selectBlockById(id);
@@ -719,11 +773,17 @@ function bindTabs() {
       leftSub.textContent = 'Componentes de encuesta listos.';
     } else if (key === 'media') {
       leftTitle.textContent = 'Media';
-      leftSub.textContent = 'Coloca imágenes.';
+      leftSub.textContent = 'Coloca imágenes y formas.';
+    } else if (key === 'templates') {
+      leftTitle.textContent = 'Plantillas';
+      leftSub.textContent = 'Inserta plantillas prediseñadas.';
     } else {
       leftTitle.textContent = 'Hoja';
       leftSub.textContent = 'Configuración visual de la hoja.';
     }
+
+    // Re-bind drag & drop for newly visible tools
+    bindTools();
   }
 
   railBtns.forEach((btn) => {

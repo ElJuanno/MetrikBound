@@ -574,8 +574,26 @@
     transform: translate3d(0,0,0);
     backface-visibility: hidden;
     -webkit-font-smoothing: antialiased;
-    contain: layout style paint;
+    /* REMOVIDO: contain: layout style paint; - esto cortaba el handle */
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    /* Permitir que el handle de rotación salga del bloque */
+    overflow: visible !important;
+  }
+
+  /* Formas decorativas sin padding */
+  .block[data-kind="shape_rect"],
+  .block[data-kind="shape_triangle"],
+  .block[data-kind="shape_diagonal"],
+  .block[data-kind="header_band"],
+  .block[data-kind="footer_band"]{
+    padding:0;
+    background:transparent !important;
+  }
+
+  /* Wrapper para contenido rotado de formas */
+  .shapeContent{
+    position:relative;
+    pointer-events:auto;
   }
 
   .block:hover{
@@ -865,6 +883,59 @@
   .block:hover .resizer,
   .block.selected .resizer{
     opacity:1;
+  }
+
+  /* Handle de rotación tipo Canva */
+  .rotateHandle{
+    position:absolute !important;
+    left:50% !important;
+    top:-50px !important;
+    width:32px !important;
+    height:32px !important;
+    background: #ffffff !important;
+    border:2px solid #6366f1 !important;
+    border-radius:50% !important;
+    cursor:grab !important;
+    opacity:0 !important;
+    transition: opacity 0.15s ease !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    box-shadow: 0 4px 12px rgba(99,102,241,.25) !important;
+    z-index:1000 !important;
+    pointer-events: auto !important;
+  }
+
+  .rotateHandle:active{
+    cursor:grabbing !important;
+  }
+
+  .rotateHandle::before{
+    content: '↻';
+    font-size:18px;
+    font-weight:900;
+    color:#6366f1;
+    line-height:1;
+  }
+
+  .rotateHandle::after{
+    content: '';
+    position: absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    width:2px;
+    height:18px;
+    background:#6366f1;
+  }
+
+  /* Solo mostrar handle de rotación cuando el bloque está seleccionado (NO en hover) */
+  .block[data-kind="shape_rect"].selected .rotateHandle,
+  .block[data-kind="shape_triangle"].selected .rotateHandle,
+  .block[data-kind="shape_diagonal"].selected .rotateHandle,
+  .block[data-kind="header_band"].selected .rotateHandle,
+  .block[data-kind="footer_band"].selected .rotateHandle{
+    opacity:1 !important;
   }
 
   .rightPanel{
@@ -1163,6 +1234,11 @@
     <div class="railBtn" data-tab="media">
       <div class="railIcon">▢</div>
       <div class="railLabel">Media</div>
+    </div>
+
+    <div class="railBtn" data-tab="templates">
+      <div class="railIcon">📋</div>
+      <div class="railLabel">Plantillas</div>
     </div>
 
     <div class="railBtn" data-tab="page">
@@ -1478,6 +1554,108 @@
       <p class="panelSub" style="margin-top:12px;padding:0 2px;">
         Haz clic en el bloque de imagen en el canvas para seleccionar un archivo.
       </p>
+
+      <div class="sectionLabel" style="grid-column:span 2;margin-top:16px;">Formas</div>
+      <div class="toolGrid">
+        <div class="toolCard tool" draggable="true" data-type="shape_rect">
+          <div class="tPreview">
+            <div style="width:50px;height:30px;background:#3f73c9;border-radius:4px;"></div>
+          </div>
+          <div class="tLabel">Rectángulo</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="shape_triangle">
+          <div class="tPreview">
+            <svg width="40" height="35" viewBox="0 0 40 35"><polygon points="20,5 35,30 5,30" fill="#3f73c9"/></svg>
+          </div>
+          <div class="tLabel">Triángulo</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="shape_diagonal" style="grid-column:span 2;">
+          <div class="tPreview" style="padding:10px 14px 6px;">
+            <svg width="80" height="30" viewBox="0 0 80 30" preserveAspectRatio="none"><polygon points="0,0 80,0 80,30" fill="#3f73c9"/></svg>
+          </div>
+          <div class="tLabel">Diagonal</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="header_band" style="grid-column:span 2;">
+          <div class="tPreview" style="padding:10px 14px 6px;">
+            <div style="width:100%;height:24px;background:#3f73c9;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:800;">ENCABEZADO</div>
+          </div>
+          <div class="tLabel">Banda superior</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="footer_band" style="grid-column:span 2;">
+          <div class="tPreview" style="padding:10px 14px 6px;">
+            <div style="width:100%;height:20px;background:#3f73c9;border-radius:4px;"></div>
+          </div>
+          <div class="tLabel">Banda inferior</div>
+        </div>
+      </div>
+
+      <div class="sectionLabel" style="grid-column:span 2;margin-top:16px;">Campos</div>
+      <div class="toolGrid">
+        <div class="toolCard tool" draggable="true" data-type="field_line" style="grid-column:span 2;">
+          <div class="tPreview" style="padding:10px 14px 6px;flex-direction:column;align-items:flex-start;gap:4px;">
+            <div style="font-size:9px;color:#0f172a;font-weight:600;">Campo:</div>
+            <div style="width:100%;height:1px;background:#0f172a;"></div>
+          </div>
+          <div class="tLabel">Línea de campo</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="field_date_line">
+          <div class="tPreview" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <div style="font-size:9px;color:#0f172a;font-weight:600;">Fecha:</div>
+            <div style="width:100%;height:1px;background:#0f172a;"></div>
+          </div>
+          <div class="tLabel">Fecha</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="field_signature">
+          <div class="tPreview" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <div style="font-size:9px;color:#0f172a;font-weight:600;">Firma:</div>
+            <div style="width:100%;height:1px;background:#0f172a;margin-top:8px;"></div>
+          </div>
+          <div class="tLabel">Firma</div>
+        </div>
+
+        <div class="toolCard tool" draggable="true" data-type="document_note" style="grid-column:span 2;">
+          <div class="tPreview" style="padding:10px 14px 6px;">
+            <div style="font-size:8px;color:#64748b;font-style:italic;line-height:1.3;">Nota del documento...</div>
+          </div>
+          <div class="tLabel">Nota</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab_templates" class="tab" style="display:none;">
+      <div class="leftHead">
+        <h3 class="panelTitle">Plantillas</h3>
+        <p class="panelSub">Inserta plantillas prediseñadas para comenzar rápidamente.</p>
+      </div>
+
+      <div class="toolGrid" style="grid-template-columns:1fr;">
+        <div class="stylePreview template-card" data-template="customer_satisfaction" style="cursor:pointer;">
+          <div class="previewBox" style="min-height:120px;flex-direction:column;gap:8px;padding:16px;">
+            <div style="width:100%;height:20px;background:#3f73c9;border-radius:4px;"></div>
+            <div style="width:80%;height:12px;background:#e2e8f0;border-radius:2px;"></div>
+            <div style="width:60%;height:8px;background:#e2e8f0;border-radius:2px;"></div>
+            <div style="display:flex;gap:4px;width:100%;margin-top:4px;">
+              <div style="width:8px;height:8px;border-radius:50%;border:2px solid #64748b;"></div>
+              <div style="flex:1;height:6px;background:#e2e8f0;border-radius:2px;"></div>
+            </div>
+            <div style="display:flex;gap:4px;width:100%;">
+              <div style="width:8px;height:8px;border-radius:50%;border:2px solid #64748b;"></div>
+              <div style="flex:1;height:6px;background:#e2e8f0;border-radius:2px;"></div>
+            </div>
+          </div>
+          <div class="styleName">Encuesta de Satisfacción del Cliente</div>
+        </div>
+      </div>
+
+      <p class="panelSub" style="margin-top:12px;padding:0 2px;">
+        Haz clic en una plantilla para insertarla en el documento. Si ya tienes bloques, se te pedirá confirmación.
+      </p>
     </div>
 
     <div id="tab_page" class="tab" style="display:none;">
@@ -1669,16 +1847,87 @@
         </div>
       </div>
 
+      <!-- Propiedades de formas decorativas -->
+      <div id="propShapeWrap" style="display:none;">
+        <div class="field">
+          <label>Color de forma</label>
+          <div class="colorChip" id="propShapeColorBtn">
+            <input class="colorNative" id="propShapeColor" type="color" value="#3f73c9">
+            <span class="colorSwatch" id="propShapeColorSw"></span>
+            <span class="colorText" id="propShapeColorTxt">#3f73c9</span>
+          </div>
+        </div>
+        <div class="field" id="propShapeBorderWrap">
+          <label>Borde</label>
+          <div class="row2">
+            <div class="colorChip" id="propShapeBorderColorBtn">
+              <input class="colorNative" id="propShapeBorderColor" type="color" value="#3f73c9">
+              <span class="colorSwatch" id="propShapeBorderColorSw"></span>
+              <span class="colorText" id="propShapeBorderColorTxt">#3f73c9</span>
+            </div>
+            <div class="rangeRow">
+              <input id="propShapeBorderWidth" type="range" min="0" max="10" value="0">
+              <span class="mini" id="propShapeBorderWidthVal">0px</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Rotación</label>
+          <div class="rangeRow">
+            <input id="propShapeRotation" type="range" min="0" max="360" value="0">
+            <span class="mini" id="propShapeRotationVal">0°</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propiedades de campos de formulario -->
+      <div id="propFieldWrap" style="display:none;">
+        <div class="field">
+          <label>Color de línea</label>
+          <div class="colorChip" id="propFieldLineColorBtn">
+            <input class="colorNative" id="propFieldLineColor" type="color" value="#0f172a">
+            <span class="colorSwatch" id="propFieldLineColorSw"></span>
+            <span class="colorText" id="propFieldLineColorTxt">#0f172a</span>
+          </div>
+        </div>
+        <div class="field" id="propFieldLineWidthWrap">
+          <label>Ancho de línea</label>
+          <div class="rangeRow">
+            <input id="propFieldLineWidth" type="range" min="50" max="400" value="200">
+            <span class="mini" id="propFieldLineWidthVal">200px</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Grosor de línea</label>
+          <div class="rangeRow">
+            <input id="propFieldLineThickness" type="range" min="1" max="5" value="1">
+            <span class="mini" id="propFieldLineThicknessVal">1px</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selector de estilo visual para preguntas -->
+      <div id="propVisualStyleWrap" style="display:none;">
+        <div class="field">
+          <label>Estilo visual</label>
+          <div class="seg" id="propVisualStyle">
+            <button type="button" data-style="modern" class="active">Moderno</button>
+            <button type="button" data-style="document">Documento</button>
+          </div>
+          <div class="mini" style="margin-top:8px;">Moderno: UI interactiva. Documento: estilo impreso.</div>
+        </div>
+      </div>
+
     </div>
 
     <div class="propCard" style="margin-top:14px;">
       <div class="field">
         <label>Modo de vista</label>
         <div class="seg" id="viewModeToggle">
-          <button type="button" data-mode="block" class="active">Con bloques</button>
-          <button type="button" data-mode="clean">Vista limpia</button>
+          <button type="button" data-mode="block" class="active">Editar</button>
+          <button type="button" data-mode="clean">Vista Final</button>
         </div>
-        <div class="mini" style="margin-top:8px;">Cambia entre vista con bloques o solo texto natural.</div>
+        <div class="mini" style="margin-top:8px;">Cambia entre modo edición o vista final lista para imprimir.</div>
       </div>
     </div>
   </aside>
@@ -2032,6 +2281,156 @@
         window.builderPersistSelected && window.builderPersistSelected();
       });
       propNumberColor.dispatchEvent(new Event('input'));
+    }
+
+    // Template insertion
+    document.querySelectorAll('.template-card').forEach((card) => {
+      card.addEventListener('click', async () => {
+        const templateId = card.dataset.template;
+        if (!templateId) return;
+
+        // Dynamically import templates module
+        const { insertTemplate } = await import('/resources/js/builder/templates.js');
+        
+        const success = await insertTemplate(templateId);
+        if (success) {
+          // Switch to text tab to see the result
+          const textTab = document.querySelector('[data-tab="text"]');
+          if (textTab) textTab.click();
+        }
+      });
+    });
+
+    // ── Propiedades de formas decorativas ──
+    const propShapeColor = document.getElementById('propShapeColor');
+    const propShapeColorSw = document.getElementById('propShapeColorSw');
+    const propShapeColorTxt = document.getElementById('propShapeColorTxt');
+    if (propShapeColor) {
+      propShapeColor.addEventListener('input', () => {
+        if (propShapeColorSw) propShapeColorSw.style.background = propShapeColor.value;
+        if (propShapeColorTxt) propShapeColorTxt.textContent = propShapeColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { bg: propShapeColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propShapeColor.dispatchEvent(new Event('input'));
+    }
+
+    const propShapeBorderColor = document.getElementById('propShapeBorderColor');
+    const propShapeBorderColorSw = document.getElementById('propShapeBorderColorSw');
+    const propShapeBorderColorTxt = document.getElementById('propShapeBorderColorTxt');
+    if (propShapeBorderColor) {
+      propShapeBorderColor.addEventListener('input', () => {
+        if (propShapeBorderColorSw) propShapeBorderColorSw.style.background = propShapeBorderColor.value;
+        if (propShapeBorderColorTxt) propShapeBorderColorTxt.textContent = propShapeBorderColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { borderColor: propShapeBorderColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propShapeBorderColor.dispatchEvent(new Event('input'));
+    }
+
+    const propShapeBorderWidth = document.getElementById('propShapeBorderWidth');
+    const propShapeBorderWidthVal = document.getElementById('propShapeBorderWidthVal');
+    if (propShapeBorderWidth) {
+      propShapeBorderWidth.addEventListener('input', () => {
+        if (propShapeBorderWidthVal) propShapeBorderWidthVal.textContent = `${propShapeBorderWidth.value}px`;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { borderWidth: Number(propShapeBorderWidth.value) } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    const propShapeRotation = document.getElementById('propShapeRotation');
+    const propShapeRotationVal = document.getElementById('propShapeRotationVal');
+    if (propShapeRotation) {
+      propShapeRotation.addEventListener('input', () => {
+        if (propShapeRotationVal) propShapeRotationVal.textContent = `${propShapeRotation.value}°`;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { rotation: Number(propShapeRotation.value) } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    // ── Propiedades de campos de formulario ──
+    const propFieldLineColor = document.getElementById('propFieldLineColor');
+    const propFieldLineColorSw = document.getElementById('propFieldLineColorSw');
+    const propFieldLineColorTxt = document.getElementById('propFieldLineColorTxt');
+    if (propFieldLineColor) {
+      propFieldLineColor.addEventListener('input', () => {
+        if (propFieldLineColorSw) propFieldLineColorSw.style.background = propFieldLineColor.value;
+        if (propFieldLineColorTxt) propFieldLineColorTxt.textContent = propFieldLineColor.value;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { lineColor: propFieldLineColor.value } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+      propFieldLineColor.dispatchEvent(new Event('input'));
+    }
+
+    const propFieldLineWidth = document.getElementById('propFieldLineWidth');
+    const propFieldLineWidthVal = document.getElementById('propFieldLineWidthVal');
+    if (propFieldLineWidth) {
+      propFieldLineWidth.addEventListener('input', () => {
+        if (propFieldLineWidthVal) propFieldLineWidthVal.textContent = `${propFieldLineWidth.value}px`;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { lineWidth: Number(propFieldLineWidth.value) } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    const propFieldLineThickness = document.getElementById('propFieldLineThickness');
+    const propFieldLineThicknessVal = document.getElementById('propFieldLineThicknessVal');
+    if (propFieldLineThickness) {
+      propFieldLineThickness.addEventListener('input', () => {
+        if (propFieldLineThicknessVal) propFieldLineThicknessVal.textContent = `${propFieldLineThickness.value}px`;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+        window.updateBlock && window.updateBlock(block.id, { props: { lineThickness: Number(propFieldLineThickness.value) } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
+    }
+
+    // ── Selector de estilo visual para preguntas ──
+    const propVisualStyle = document.getElementById('propVisualStyle');
+    if (propVisualStyle) {
+      propVisualStyle.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        
+        const style = btn.dataset.style;
+        const block = window.getSelectedBlock ? window.getSelectedBlock() : null;
+        if (!block) return;
+
+        // Actualizar botones activos
+        propVisualStyle.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b === btn);
+        });
+
+        window.updateBlock && window.updateBlock(block.id, { props: { visualStyle: style } });
+        window.rebuildBlock && window.rebuildBlock(block.id);
+        window.builderAutosave && window.builderAutosave();
+        window.builderPersistSelected && window.builderPersistSelected();
+      });
     }
   });
 </script>

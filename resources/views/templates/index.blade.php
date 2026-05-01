@@ -45,6 +45,7 @@
         @php
         $templates = [
             [
+                'id' => 'customer_satisfaction',
                 'title' => 'Encuesta de Satisfacción del Cliente',
                 'desc' => 'Mide la satisfacción de tus clientes con NPS y preguntas de seguimiento',
                 'questions' => 8,
@@ -54,6 +55,7 @@
                 'category' => 'Satisfacción'
             ],
             [
+                'id' => null,
                 'title' => 'Formulario de Registro de Evento',
                 'desc' => 'Recopila información de asistentes a eventos, conferencias o webinars',
                 'questions' => 6,
@@ -63,6 +65,7 @@
                 'category' => 'Eventos'
             ],
             [
+                'id' => null,
                 'title' => 'Feedback de Producto',
                 'desc' => 'Obtén opiniones sobre características, usabilidad y mejoras',
                 'questions' => 10,
@@ -72,6 +75,7 @@
                 'category' => 'Feedback'
             ],
             [
+                'id' => null,
                 'title' => 'Evaluación de Empleados',
                 'desc' => 'Evalúa el desempeño y satisfacción de tu equipo de trabajo',
                 'questions' => 12,
@@ -81,6 +85,7 @@
                 'category' => 'Recursos Humanos'
             ],
             [
+                'id' => null,
                 'title' => 'Encuesta de Mercado',
                 'desc' => 'Investiga preferencias y comportamiento de tu mercado objetivo',
                 'questions' => 15,
@@ -90,6 +95,7 @@
                 'category' => 'Marketing'
             ],
             [
+                'id' => null,
                 'title' => 'Contacto y Soporte',
                 'desc' => 'Formulario simple para consultas, dudas y solicitudes de ayuda',
                 'questions' => 5,
@@ -99,6 +105,7 @@
                 'category' => 'Soporte'
             ],
             [
+                'id' => null,
                 'title' => 'Evaluación de Curso',
                 'desc' => 'Recopila feedback de estudiantes sobre cursos y capacitaciones',
                 'questions' => 9,
@@ -108,6 +115,7 @@
                 'category' => 'Educación'
             ],
             [
+                'id' => null,
                 'title' => 'Solicitud de Empleo',
                 'desc' => 'Recopila información de candidatos para procesos de selección',
                 'questions' => 11,
@@ -117,6 +125,7 @@
                 'category' => 'Recursos Humanos'
             ],
             [
+                'id' => null,
                 'title' => 'Reserva de Cita',
                 'desc' => 'Permite a usuarios agendar citas con selección de fecha y hora',
                 'questions' => 7,
@@ -126,6 +135,7 @@
                 'category' => 'Servicios'
             ],
             [
+                'id' => null,
                 'title' => 'Encuesta Post-Compra',
                 'desc' => 'Obtén feedback sobre la experiencia de compra y el producto',
                 'questions' => 8,
@@ -178,12 +188,18 @@
                         </span>
                     </div>
 
-                    <a href="{{ route('surveys.create') }}" class="btn-ghost text-indigo-600 hover:bg-indigo-50">
-                        Usar plantilla
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </a>
+                    @if($template['id'])
+                        <button onclick="openTemplateModal('{{ $template['id'] }}', '{{ $template['title'] }}')" class="btn-ghost text-indigo-600 hover:bg-indigo-50">
+                            Usar plantilla
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    @else
+                        <span class="btn-ghost text-slate-400 cursor-not-allowed">
+                            Próximamente
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -210,4 +226,82 @@
     </div>
 
 </div>
+
+{{-- Modal for Template Name --}}
+<div id="templateModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+        <div class="flex items-start justify-between">
+            <div>
+                <h3 class="text-xl font-bold text-slate-900">Crear encuesta desde plantilla</h3>
+                <p class="text-sm text-slate-600 mt-1" id="templateName"></p>
+            </div>
+            <button onclick="closeTemplateModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <form id="templateForm" method="POST" action="{{ route('surveys.createFromTemplate') }}" class="space-y-4">
+            @csrf
+            <input type="hidden" name="template_id" id="templateId">
+            
+            <div>
+                <label for="surveyTitle" class="block text-sm font-medium text-slate-700 mb-2">
+                    Nombre de la encuesta
+                </label>
+                <input 
+                    type="text" 
+                    id="surveyTitle" 
+                    name="title" 
+                    required
+                    maxlength="200"
+                    class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                    placeholder="Ej: Encuesta de Satisfacción Q1 2026"
+                >
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeTemplateModal()" class="flex-1 btn-ghost">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 btn-primary">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Crear encuesta
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openTemplateModal(templateId, templateTitle) {
+    document.getElementById('templateId').value = templateId;
+    document.getElementById('templateName').textContent = templateTitle;
+    document.getElementById('surveyTitle').value = templateTitle;
+    document.getElementById('templateModal').classList.remove('hidden');
+    document.getElementById('surveyTitle').focus();
+}
+
+function closeTemplateModal() {
+    document.getElementById('templateModal').classList.add('hidden');
+    document.getElementById('templateForm').reset();
+}
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeTemplateModal();
+    }
+});
+
+// Close modal on backdrop click
+document.getElementById('templateModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeTemplateModal();
+    }
+});
+</script>
 @endsection

@@ -388,16 +388,30 @@ function buildBlockInnerHtml(block) {
     `;
   }
 
-  if (block.kind === 'q_text') {
-    return `
-      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
-      <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Pregunta'))}</div>
-      <div class="reqTag" data-req>Requerida</div>
-      <div class="fakeInput"></div>
-    `;
-  }
-
   if (block.kind === 'q_radio') {
+    const visualStyle = block.props.visualStyle || 'modern';
+    
+    if (visualStyle === 'document') {
+      const opts = Array.isArray(block.props.options) && block.props.options.length
+        ? block.props.options
+        : ['Opción 1', 'Opción 2', 'Opción 3'];
+      const optColor = getOptionsColor(block);
+      
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div class="qLabel editable" contenteditable="true" style="color:${textColor};font-weight:600;">${escapeHtml(getBlockText(block, 'Pregunta de opción múltiple'))}</div>
+        <div class="reqTag" data-req>Requerida</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+          ${opts.map((o) => `
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="width:12px;height:12px;border-radius:50%;border:2px solid ${optColor};flex-shrink:0;"></span>
+              <span style="font-size:14px;color:${optColor};">${escapeHtml(o)}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    
     return `
       <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
       <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Pregunta de opción múltiple'))}</div>
@@ -407,6 +421,29 @@ function buildBlockInnerHtml(block) {
   }
 
   if (block.kind === 'q_check') {
+    const visualStyle = block.props.visualStyle || 'modern';
+    
+    if (visualStyle === 'document') {
+      const opts = Array.isArray(block.props.options) && block.props.options.length
+        ? block.props.options
+        : ['Opción 1', 'Opción 2', 'Opción 3'];
+      const optColor = getOptionsColor(block);
+      
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div class="qLabel editable" contenteditable="true" style="color:${textColor};font-weight:600;">${escapeHtml(getBlockText(block, 'Checkbox múltiple'))}</div>
+        <div class="reqTag" data-req>Requerida</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+          ${opts.map((o) => `
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="width:12px;height:12px;border-radius:3px;border:2px solid ${optColor};flex-shrink:0;"></span>
+              <span style="font-size:14px;color:${optColor};">${escapeHtml(o)}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    
     return `
       <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
       <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Checkbox múltiple'))}</div>
@@ -447,6 +484,28 @@ function buildBlockInnerHtml(block) {
   }
 
   if (block.kind === 'q_yesno') {
+    const visualStyle = block.props.visualStyle || 'modern';
+    
+    if (visualStyle === 'document') {
+      const optColor = getOptionsColor(block);
+      
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div class="qLabel editable" contenteditable="true" style="color:${textColor};font-weight:600;">${escapeHtml(getBlockText(block, '¿Estás de acuerdo?'))}</div>
+        <div class="reqTag" data-req>Requerida</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="width:12px;height:12px;border-radius:50%;border:2px solid ${optColor};flex-shrink:0;"></span>
+            <span style="font-size:14px;color:${optColor};">Sí</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="width:12px;height:12px;border-radius:50%;border:2px solid ${optColor};flex-shrink:0;"></span>
+            <span style="font-size:14px;color:${optColor};">No</span>
+          </div>
+        </div>
+      `;
+    }
+    
     return `
       <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
       <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, '¿Estás de acuerdo?'))}</div>
@@ -455,6 +514,26 @@ function buildBlockInnerHtml(block) {
         <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.04));">Sí</div>
         <div style="flex:1;height:38px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.04));">No</div>
       </div>
+    `;
+  }
+
+  if (block.kind === 'q_text') {
+    const visualStyle = block.props.visualStyle || 'modern';
+    
+    if (visualStyle === 'document') {
+      return `
+        <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+        <div class="qLabel editable" contenteditable="true" style="color:${textColor};font-weight:600;">${escapeHtml(getBlockText(block, 'Pregunta'))}</div>
+        <div class="reqTag" data-req>Requerida</div>
+        <div style="margin-top:8px;border-bottom:1px solid ${textColor};padding-bottom:20px;"></div>
+      `;
+    }
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div class="qLabel editable" contenteditable="true" style="color:${textColor}">${escapeHtml(getBlockText(block, 'Pregunta'))}</div>
+      <div class="reqTag" data-req>Requerida</div>
+      <div class="fakeInput"></div>
     `;
   }
 
@@ -512,6 +591,125 @@ function buildBlockInnerHtml(block) {
     `;
   }
 
+  // Decorative shapes
+  if (block.kind === 'shape_rect') {
+    const bgColor = block.props.bg || '#3f73c9';
+    const borderColor = block.props.borderColor || '#3f73c9';
+    const borderWidth = block.props.borderWidth || 0;
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="width:100%;height:100%;background:${bgColor};border:${borderWidth}px solid ${borderColor};border-radius:8px;"></div>
+    `;
+  }
+
+  if (block.kind === 'shape_triangle') {
+    const bgColor = block.props.bg || '#3f73c9';
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="width:100%;height:100%;position:relative;">
+        <svg viewBox="0 0 100 100" style="width:100%;height:100%;" preserveAspectRatio="none">
+          <polygon points="50,10 90,90 10,90" fill="${bgColor}" />
+        </svg>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'shape_diagonal') {
+    const bgColor = block.props.bg || '#3f73c9';
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="width:100%;height:100%;position:relative;overflow:hidden;">
+        <svg viewBox="0 0 100 100" style="width:100%;height:100%;" preserveAspectRatio="none">
+          <polygon points="0,0 100,0 100,100" fill="${bgColor}" />
+        </svg>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'header_band') {
+    const bgColor = block.props.bg || '#3f73c9';
+    const textColor = block.props.color || '#ffffff';
+    const fontSize = block.props.fontSize || 18;
+    const text = getBlockText(block, 'FORMATO DE ENCUESTA');
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="width:100%;height:100%;background:${bgColor};display:flex;align-items:center;justify-content:center;padding:20px;">
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;font-weight:900;color:${textColor};text-align:center;letter-spacing:0.5px;">${escapeHtml(text)}</div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'footer_band') {
+    const bgColor = block.props.bg || '#3f73c9';
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="width:100%;height:100%;background:${bgColor};border-radius:0 0 8px 8px;"></div>
+    `;
+  }
+
+  // Form fields
+  if (block.kind === 'field_line') {
+    const label = getBlockText(block, 'Campo:');
+    const lineColor = block.props.lineColor || '#0f172a';
+    const lineWidth = block.props.lineWidth || 200;
+    const lineThickness = block.props.lineThickness || 1;
+    const fontSize = block.props.fontSize || 14;
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;font-weight:600;color:${textColor};white-space:nowrap;">${escapeHtml(label)}</div>
+        <div style="width:${lineWidth}px;height:${lineThickness}px;background:${lineColor};flex-shrink:0;"></div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'field_signature') {
+    const label = getBlockText(block, 'Firma:');
+    const lineColor = block.props.lineColor || '#0f172a';
+    const lineThickness = block.props.lineThickness || 1;
+    const fontSize = block.props.fontSize || 14;
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;font-weight:600;color:${textColor};">${escapeHtml(label)}</div>
+        <div style="width:100%;height:${lineThickness}px;background:${lineColor};margin-top:auto;"></div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'field_date_line') {
+    const label = getBlockText(block, 'Fecha:');
+    const lineColor = block.props.lineColor || '#0f172a';
+    const lineWidth = block.props.lineWidth || 150;
+    const lineThickness = block.props.lineThickness || 1;
+    const fontSize = block.props.fontSize || 14;
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="editable" contenteditable="true" style="font-size:${fontSize}px;font-weight:600;color:${textColor};white-space:nowrap;">${escapeHtml(label)}</div>
+        <div style="width:${lineWidth}px;height:${lineThickness}px;background:${lineColor};flex-shrink:0;"></div>
+      </div>
+    `;
+  }
+
+  if (block.kind === 'document_note') {
+    const fontSize = block.props.fontSize || 12;
+    const noteColor = block.props.color || '#64748b';
+    
+    return `
+      <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
+      <div class="editable" contenteditable="true" style="font-size:${fontSize}px;color:${noteColor};line-height:1.6;font-style:italic;">${escapeHtml(getBlockText(block, 'Nota del documento'))}</div>
+    `;
+  }
+
   return `
     <div class="blockTopRow"><div class="handleDot" title="Arrastra"></div></div>
     <div class="tText editable" contenteditable="true">Bloque</div>
@@ -528,10 +726,17 @@ export function renderBlockElement(block) {
   el.style.top = `${block.y}px`;
   el.style.width = `${block.w}px`;
 
+  // Bloques que necesitan altura fija
+  const fixedHeightKinds = ['shape_rect', 'shape_triangle', 'shape_diagonal', 'header_band', 'footer_band', 'field_signature'];
   const autoHeightKinds = ['q_radio', 'q_check', 'q_select'];
-  el.style.height = autoHeightKinds.includes(block.kind)
-    ? 'auto'
-    : (block.h ? `${block.h}px` : 'auto');
+  
+  if (fixedHeightKinds.includes(block.kind)) {
+    el.style.height = `${block.h || 200}px`;
+  } else if (autoHeightKinds.includes(block.kind)) {
+    el.style.height = 'auto';
+  } else {
+    el.style.height = block.h ? `${block.h}px` : 'auto';
+  }
 
   el.style.zIndex = String(block.z || 1);
   el.style.textAlign = block.props.align || 'left';
@@ -541,7 +746,23 @@ export function renderBlockElement(block) {
     el.style.paddingBottom = '14px';
   }
 
-  el.innerHTML = `${buildBlockInnerHtml(block)}<div class="resizer" title="Redimensionar"></div>`;
+  // Agregar handle de rotación solo a formas decorativas
+  const shapeKinds = ['shape_rect', 'shape_triangle', 'shape_diagonal', 'header_band', 'footer_band'];
+  
+  if (shapeKinds.includes(block.kind)) {
+    // Para formas, envolver el contenido en un wrapper rotado y agregar handle fuera
+    const rotation = block.props?.rotation || 0;
+    
+    el.innerHTML = `
+      <div class="shapeContent" style="width:100%;height:100%;transform:rotate(${rotation}deg);transform-origin:center center;">
+        ${buildBlockInnerHtml(block)}
+      </div>
+      <div class="resizer" title="Redimensionar"></div>
+      <div class="rotateHandle" title="Rotar"></div>
+    `;
+  } else {
+    el.innerHTML = `${buildBlockInnerHtml(block)}<div class="resizer" title="Redimensionar"></div>`;
+  }
 
   if (block.locked) {
     el.classList.add('locked');
@@ -642,8 +863,24 @@ export function rebuildBlock(id) {
     return;
   }
 
-  // Reconstruir innerHTML preservando el elemento
-  el.innerHTML = `${buildBlockInnerHtml(block)}<div class="resizer" title="Redimensionar"></div>`;
+  // Agregar handle de rotación solo a formas decorativas
+  const shapeKinds = ['shape_rect', 'shape_triangle', 'shape_diagonal', 'header_band', 'footer_band'];
+
+  if (shapeKinds.includes(block.kind)) {
+    // Para formas, envolver el contenido en un wrapper rotado y agregar handle fuera
+    const rotation = block.props?.rotation || 0;
+    
+    el.innerHTML = `
+      <div class="shapeContent" style="width:100%;height:100%;transform:rotate(${rotation}deg);transform-origin:center center;">
+        ${buildBlockInnerHtml(block)}
+      </div>
+      <div class="resizer" title="Redimensionar"></div>
+      <div class="rotateHandle" title="Rotar"></div>
+    `;
+  } else {
+    // Reconstruir innerHTML preservando el elemento
+    el.innerHTML = `${buildBlockInnerHtml(block)}<div class="resizer" title="Redimensionar"></div>`;
+  }
 
   // Re-aplicar todos los estilos
   el.style.left = `${block.x}px`;
@@ -652,10 +889,17 @@ export function rebuildBlock(id) {
   el.style.zIndex = String(block.z || 1);
   el.style.textAlign = block.props.align || 'left';
 
+  // Bloques que necesitan altura fija
+  const fixedHeightKinds = ['shape_rect', 'shape_triangle', 'shape_diagonal', 'header_band', 'footer_band', 'field_signature'];
   const autoHeightKinds = ['q_radio', 'q_check', 'q_select'];
-  el.style.height = autoHeightKinds.includes(block.kind)
-    ? 'auto'
-    : (block.h ? `${block.h}px` : 'auto');
+  
+  if (fixedHeightKinds.includes(block.kind)) {
+    el.style.height = `${block.h || 200}px`;
+  } else if (autoHeightKinds.includes(block.kind)) {
+    el.style.height = 'auto';
+  } else {
+    el.style.height = block.h ? `${block.h}px` : 'auto';
+  }
 
   if (block.props.color) {
     el.style.color = block.props.color;
@@ -701,10 +945,17 @@ function _patchBlockEl(el, block) {
   el.style.zIndex = String(block.z || 1);
   el.style.textAlign = block.props.align || 'left';
 
+  // Bloques que necesitan altura fija
+  const fixedHeightKinds = ['shape_rect', 'shape_triangle', 'shape_diagonal', 'header_band', 'footer_band', 'field_signature'];
   const autoHeightKinds = ['q_radio', 'q_check', 'q_select'];
-  el.style.height = autoHeightKinds.includes(block.kind)
-    ? 'auto'
-    : (block.h ? `${block.h}px` : 'auto');
+  
+  if (fixedHeightKinds.includes(block.kind)) {
+    el.style.height = `${block.h || 200}px`;
+  } else if (autoHeightKinds.includes(block.kind)) {
+    el.style.height = 'auto';
+  } else {
+    el.style.height = block.h ? `${block.h}px` : 'auto';
+  }
 
   if (block.props.color) {
     el.style.color = block.props.color;
@@ -797,12 +1048,27 @@ export function selectBlockById(id) {
   const quoteWrap = document.getElementById('propQuoteWrap');
   const calloutWrap = document.getElementById('propCalloutWrap');
   const numberWrap = document.getElementById('propNumberWrap');
+  const shapeWrap = document.getElementById('propShapeWrap');
+  const fieldWrap = document.getElementById('propFieldWrap');
+  const visualStyleWrap = document.getElementById('propVisualStyleWrap');
 
   if (dividerWrap) dividerWrap.style.display = block.kind === 'divider' ? 'block' : 'none';
   if (highlightWrap) highlightWrap.style.display = block.kind === 'highlight_box' ? 'block' : 'none';
   if (quoteWrap) quoteWrap.style.display = block.kind === 'quote' ? 'block' : 'none';
   if (calloutWrap) calloutWrap.style.display = block.kind === 'callout' ? 'block' : 'none';
   if (numberWrap) numberWrap.style.display = block.kind === 'number_heading' ? 'block' : 'none';
+
+  // Mostrar propiedades de formas para bloques decorativos
+  const shapeKinds = ['shape_rect', 'shape_triangle', 'shape_diagonal', 'header_band', 'footer_band'];
+  if (shapeWrap) shapeWrap.style.display = shapeKinds.includes(block.kind) ? 'block' : 'none';
+
+  // Mostrar propiedades de campos para bloques de formulario
+  const fieldKinds = ['field_line', 'field_signature', 'field_date_line', 'document_note'];
+  if (fieldWrap) fieldWrap.style.display = fieldKinds.includes(block.kind) ? 'block' : 'none';
+
+  // Mostrar selector de estilo visual para preguntas
+  const questionKinds = ['q_text', 'q_radio', 'q_check', 'q_yesno'];
+  if (visualStyleWrap) visualStyleWrap.style.display = questionKinds.includes(block.kind) ? 'block' : 'none';
 
   // Sincronizar valores de controles específicos
   if (block.kind === 'divider') {
@@ -838,6 +1104,57 @@ export function selectBlockById(id) {
     const nc = document.getElementById('propNumberColor');
     if (sn) sn.value = block.props.sectionNumber || '01';
     if (nc) { nc.value = block.props.numberColor || '#6366f1'; nc.dispatchEvent(new Event('input')); }
+  }
+
+  // Sincronizar propiedades de formas
+  if (shapeKinds.includes(block.kind)) {
+    const sc = document.getElementById('propShapeColor');
+    const sbc = document.getElementById('propShapeBorderColor');
+    const sbw = document.getElementById('propShapeBorderWidth');
+    const sbwv = document.getElementById('propShapeBorderWidthVal');
+    const sr = document.getElementById('propShapeRotation');
+    const srv = document.getElementById('propShapeRotationVal');
+    const sbwrap = document.getElementById('propShapeBorderWrap');
+
+    if (sc) { sc.value = block.props.bg || '#3f73c9'; sc.dispatchEvent(new Event('input')); }
+    if (sbc) { sbc.value = block.props.borderColor || '#3f73c9'; sbc.dispatchEvent(new Event('input')); }
+    if (sbw) sbw.value = String(block.props.borderWidth || 0);
+    if (sbwv) sbwv.textContent = `${block.props.borderWidth || 0}px`;
+    if (sr) sr.value = String(block.props.rotation || 0);
+    if (srv) srv.textContent = `${block.props.rotation || 0}°`;
+
+    // Solo mostrar controles de borde para shape_rect
+    if (sbwrap) sbwrap.style.display = block.kind === 'shape_rect' ? 'block' : 'none';
+  }
+
+  // Sincronizar propiedades de campos
+  if (fieldKinds.includes(block.kind)) {
+    const flc = document.getElementById('propFieldLineColor');
+    const flw = document.getElementById('propFieldLineWidth');
+    const flwv = document.getElementById('propFieldLineWidthVal');
+    const flt = document.getElementById('propFieldLineThickness');
+    const fltv = document.getElementById('propFieldLineThicknessVal');
+    const flwwrap = document.getElementById('propFieldLineWidthWrap');
+
+    if (flc) { flc.value = block.props.lineColor || '#0f172a'; flc.dispatchEvent(new Event('input')); }
+    if (flw) flw.value = String(block.props.lineWidth || 200);
+    if (flwv) flwv.textContent = `${block.props.lineWidth || 200}px`;
+    if (flt) flt.value = String(block.props.lineThickness || 1);
+    if (fltv) fltv.textContent = `${block.props.lineThickness || 1}px`;
+
+    // Solo mostrar control de ancho para field_line y field_date_line
+    if (flwwrap) flwwrap.style.display = ['field_line', 'field_date_line'].includes(block.kind) ? 'block' : 'none';
+  }
+
+  // Sincronizar selector de estilo visual para preguntas
+  if (questionKinds.includes(block.kind)) {
+    const vs = document.getElementById('propVisualStyle');
+    if (vs) {
+      const currentStyle = block.props.visualStyle || 'modern';
+      vs.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.style === currentStyle);
+      });
+    }
   }
 }
 
