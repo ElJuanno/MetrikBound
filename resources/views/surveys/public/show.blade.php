@@ -56,7 +56,6 @@
                 0 32px 80px rgba(0,0,0,.45),
                 0 8px 24px rgba(0,0,0,.25);
             overflow: visible;
-            padding-bottom: 60px;
         }
 
         /* Marca de agua en la hoja */
@@ -319,17 +318,30 @@
                     $color = $props['color'] ?? '#0f172a';
                 @endphp
 
+                @php
+                    // Determinar si el bloque necesita padding
+                    $noPadding = in_array($kind, ['header_band', 'footer_band', 'shape_rect', 'shape_triangle', 'shape_diagonal', 'img']);
+                    
+                    // Determinar si el bloque necesita altura fija
+                    $needsHeight = !in_array($kind, ['q_radio', 'q_check', 'q_select', 'q_text', 'q_yesno', 'q_stars', 'q_numeric', 'q_date', 'q_scale']);
+                    
+                    // Obtener rotación si existe
+                    $rotation = $props['rotation'] ?? 0;
+                @endphp
+
                 <div style="
                     position:absolute;
                     left: {{ $x }}px;
                     top: {{ $y }}px;
                     width: {{ $w }}px;
-                    @if(!in_array($kind, ['q_radio', 'q_check', 'q_select']))
+                    @if($needsHeight)
                     height: {{ $h }}px;
                     @endif
                     background:transparent;
                     border:none;
+                    @if(!$noPadding)
                     padding:16px;
+                    @endif
                     overflow:visible;
                 ">
                     @if($kind === 'title')
@@ -362,13 +374,58 @@
                             margin: 8px 0;
                         "></div>
 
+                    @elseif($kind === 'divider')
+                        @php
+                            $variant = $props['dividerVariant'] ?? 'simple';
+                            $dividerColor = $props['dividerColor'] ?? '#cbd5e1';
+                            $thickness = $props['dividerThickness'] ?? 2;
+                        @endphp
+                        @if($variant === 'simple')
+                            <div style="
+                                height: {{ $thickness }}px;
+                                background: {{ $dividerColor }};
+                                border-radius: 999px;
+                                margin: 8px 0;
+                            "></div>
+                        @elseif($variant === 'gradient')
+                            <div style="
+                                height: {{ $thickness }}px;
+                                background: linear-gradient(90deg, transparent, {{ $dividerColor }}, transparent);
+                                border-radius: 999px;
+                                margin: 8px 0;
+                            "></div>
+                        @elseif($variant === 'dashed')
+                            <div style="
+                                height: {{ $thickness }}px;
+                                background: repeating-linear-gradient(90deg, {{ $dividerColor }} 0, {{ $dividerColor }} 8px, transparent 8px, transparent 14px);
+                                border-radius: 999px;
+                                margin: 8px 0;
+                            "></div>
+                        @elseif($variant === 'double')
+                            <div style="margin: 8px 0;">
+                                <div style="height: {{ $thickness }}px; background: {{ $dividerColor }}; border-radius: 999px;"></div>
+                                <div style="height: {{ max(1, $thickness - 1) }}px; background: {{ $dividerColor }}; border-radius: 999px; opacity: 0.5; margin-top: 3px;"></div>
+                            </div>
+                        @endif
+
                     @elseif($kind === 'img')
                         @if(!empty($props['img']))
-                            <img src="{{ $props['img'] }}" alt="Imagen" style="
-                                max-width: 100%;
-                                height: auto;
+                            <div style="
+                                width: 100%;
+                                height: 100%;
                                 border-radius: 12px;
+                                overflow: hidden;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
                             ">
+                                <img src="{{ $props['img'] }}" alt="Imagen" style="
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: contain;
+                                    display: block;
+                                ">
+                            </div>
                         @endif
 
                     @elseif($kind === 'q_text')
@@ -534,6 +591,88 @@
                                 </div>
                             </div>
                         @endif
+
+                    @elseif($kind === 'header_band')
+                        @php
+                            $bgColor = $props['bg'] ?? '#3f73c9';
+                            $textColor = $props['color'] ?? '#ffffff';
+                            $rotation = $props['rotation'] ?? 0;
+                        @endphp
+                        <div style="
+                            width: 100%;
+                            height: 100%;
+                            background: {{ $bgColor }};
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 20px;
+                            font-size: {{ $fontSize }}px;
+                            font-weight: 900;
+                            color: {{ $textColor }};
+                            text-align: center;
+                            letter-spacing: 0.5px;
+                            transform: rotate({{ $rotation }}deg);
+                        ">
+                            {{ $html }}
+                        </div>
+
+                    @elseif($kind === 'footer_band')
+                        @php
+                            $bgColor = $props['bg'] ?? '#3f73c9';
+                            $rotation = $props['rotation'] ?? 0;
+                        @endphp
+                        <div style="
+                            width: 100%;
+                            height: 100%;
+                            background: {{ $bgColor }};
+                            transform: rotate({{ $rotation }}deg);
+                        "></div>
+
+                    @elseif($kind === 'shape_rect')
+                        @php
+                            $bgColor = $props['bg'] ?? '#3f73c9';
+                            $borderColor = $props['borderColor'] ?? '#3f73c9';
+                            $borderWidth = $props['borderWidth'] ?? 0;
+                            $rotation = $props['rotation'] ?? 0;
+                        @endphp
+                        <div style="
+                            width: 100%;
+                            height: 100%;
+                            background: {{ $bgColor }};
+                            border: {{ $borderWidth }}px solid {{ $borderColor }};
+                            border-radius: 8px;
+                            transform: rotate({{ $rotation }}deg);
+                        "></div>
+
+                    @elseif($kind === 'shape_triangle')
+                        @php
+                            $bgColor = $props['bg'] ?? '#3f73c9';
+                            $rotation = $props['rotation'] ?? 0;
+                        @endphp
+                        <div style="
+                            width: 100%;
+                            height: 100%;
+                            transform: rotate({{ $rotation }}deg);
+                        ">
+                            <svg viewBox="0 0 100 100" style="width:100%;height:100%;" preserveAspectRatio="none">
+                                <polygon points="50,10 90,90 10,90" fill="{{ $bgColor }}" />
+                            </svg>
+                        </div>
+
+                    @elseif($kind === 'shape_diagonal')
+                        @php
+                            $bgColor = $props['bg'] ?? '#3f73c9';
+                            $rotation = $props['rotation'] ?? 0;
+                        @endphp
+                        <div style="
+                            width: 100%;
+                            height: 100%;
+                            transform: rotate({{ $rotation }}deg);
+                        ">
+                            <svg viewBox="0 0 100 100" style="width:100%;height:100%;" preserveAspectRatio="none">
+                                <polygon points="0,0 100,0 100,100" fill="{{ $bgColor }}" />
+                            </svg>
+                        </div>
 
                     @endif
                 </div>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MetrikBound | Diseña encuestas visuales</title>
+  <link rel="icon" type="image/png" href="{{ asset('images/Logo.png') }}">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -634,8 +635,7 @@
   <nav>
     <div class="container nav-wrap">
       <a href="#" class="brand">
-        <span class="brand-mark"><i data-lucide="sparkles"></i></span>
-        <span>MetrikBound</span>
+        <img src="{{ asset('images/Logos.png') }}" alt="MetrikBound" style="height: 110px; width: 200px;">
       </a>
 
       <div class="nav-links">
@@ -837,8 +837,7 @@
   <footer>
     <div class="container footer-row">
       <div class="brand">
-        <span class="brand-mark"><i data-lucide="sparkles"></i></span>
-        <span>MetrikBound</span>
+        <img src="{{ asset('images/Logos.png') }}" alt="MetrikBound" style="height: 110px; width: auto;">
       </div>
 
       <div>© 2026 MetrikBound. Todos los derechos reservados.</div>

@@ -545,19 +545,14 @@ function bindBlockInteractions() {
     const block = getBlockById(id);
     if (!block) return;
 
+    // Editable text - detener aquí
     if (e.target.closest('.editable')) {
       setSelectedId(id);
       selectBlockById(id);
       return;
     }
 
-    if (e.target.closest('[data-imgbox]')) {
-      setSelectedId(id);
-      selectBlockById(id);
-      pickImageForBlock(id);
-      return;
-    }
-
+    // Resizer
     if (e.target.classList.contains('resizer')) {
       if (block.locked) return;
 
@@ -634,6 +629,7 @@ function bindBlockInteractions() {
       return;
     }
 
+    // Modo de arrastre (para todos los bloques, incluyendo imágenes)
     activeId = id;
     mode = 'move';
     startX = e.clientX;
@@ -649,6 +645,23 @@ function bindBlockInteractions() {
 
     e.preventDefault();
     e.stopPropagation();
+  });
+
+  // Doble click en imagen para cambiarla
+  dom.paper.addEventListener('dblclick', (e) => {
+    const blockEl = e.target.closest('.block');
+    if (!blockEl) return;
+
+    const id = blockEl.dataset.id;
+    const block = getBlockById(id);
+    if (!block) return;
+
+    // Solo para bloques de imagen
+    if (block.kind === 'img' && e.target.closest('[data-imgbox]')) {
+      pickImageForBlock(id);
+      e.preventDefault();
+      e.stopPropagation();
+    }
   });
 
   dom.paper.addEventListener('input', (e) => {

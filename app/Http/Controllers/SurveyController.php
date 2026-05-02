@@ -70,6 +70,15 @@ public function publish(Survey $survey)
     return back()->with('success', 'Encuesta publicada correctamente.');
 }
 
+public function destroy(Survey $survey)
+{
+    abort_unless($survey->user_id === auth()->id(), 403);
+
+    $survey->delete();
+
+    return redirect()->route('surveys.index')->with('success', 'Encuesta eliminada correctamente.');
+}
+
 public function createFromTemplate(Request $request)
 {
     $data = $request->validate([
@@ -120,8 +129,8 @@ private function getTemplateBlocks($templateId)
                 'variant' => null,
                 'x' => 0,
                 'y' => 0,
-                'w' => 794,
-                'h' => 100,
+                'w' => 590,
+                'h' => 124,
                 'locked' => false,
                 'z' => 1,
                 'props' => [
@@ -158,7 +167,7 @@ private function getTemplateBlocks($templateId)
                     'font' => 'system',
                     'align' => 'left',
                     'optColor' => '',
-                    'img' => '/storage/logo.png',
+                    'img' => '/images/Logos.png',
                     'required' => false,
                     'options' => null,
                 ],
@@ -169,10 +178,10 @@ private function getTemplateBlocks($templateId)
                 'id' => 'blk_' . Str::random(8),
                 'kind' => 'text',
                 'variant' => null,
-                'x' => 60,
-                'y' => 130,
-                'w' => 674,
-                'h' => null,
+                'x' => 0,
+                'y' => 125,
+                'w' => 591,
+                'h' => 71,
                 'locked' => false,
                 'z' => 3,
                 'props' => [
@@ -182,7 +191,7 @@ private function getTemplateBlocks($templateId)
                     'bg' => '',
                     'alpha' => 100,
                     'font' => 'system',
-                    'align' => 'left',
+                    'align' => 'center',
                 ],
             ],
             
@@ -236,7 +245,7 @@ private function getTemplateBlocks($templateId)
                 'kind' => 'q_yesno',
                 'variant' => null,
                 'x' => 60,
-                'y' => 380,
+                'y' => 400,
                 'w' => 674,
                 'h' => null,
                 'locked' => false,
@@ -362,7 +371,7 @@ private function getTemplateBlocks($templateId)
                 'kind' => 'footer_band',
                 'variant' => null,
                 'x' => 0,
-                'y' => 1030,
+                'y' => 1050,
                 'w' => 794,
                 'h' => 80,
                 'locked' => false,

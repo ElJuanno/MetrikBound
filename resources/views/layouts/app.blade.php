@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'MetrikBound')</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/Logo.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -14,14 +15,8 @@
         {{-- SIDEBAR REDISEÑADO --}}
         <aside class="hidden lg:flex lg:min-h-screen lg:flex-col bg-slate-900 text-white">
             {{-- Logo --}}
-            <div class="flex items-center gap-3 px-6 py-6 border-b border-white/10">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 text-base font-bold shadow-lg ring-2 ring-white/10">
-                    M
-                </div>
-                <div>
-                    <div class="text-base font-bold tracking-tight">MetrikBound</div>
-                    <div class="text-xs text-slate-400">Encuestas visuales</div>
-                </div>
+            <div class="flex items-center justify-center px-2 py-0 border-b border-white/10">
+                <img src="{{ asset('images/logo.png') }}" alt="MetrikBound" class="w-full h-auto max-w-[200px]">
             </div>
 
             {{-- CTA Card --}}
@@ -94,13 +89,7 @@
                 <div class="flex items-center justify-between px-6 py-4 lg:px-8">
                     {{-- Mobile Logo --}}
                     <div class="flex items-center gap-3 lg:hidden">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-bold text-white">
-                            M
-                        </div>
-                        <div>
-                            <div class="text-sm font-bold">MetrikBound</div>
-                            <div class="text-xs text-slate-500">Encuestas</div>
-                        </div>
+                        <img src="{{ asset('images/logo.png') }}" alt="MetrikBound" class="h-10 w-auto">
                     </div>
 
                     {{-- Page Title --}}

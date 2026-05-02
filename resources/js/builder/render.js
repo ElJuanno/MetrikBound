@@ -212,7 +212,7 @@ export function renderImage(el, dataUrl) {
     return;
   }
 
-  box.innerHTML = `<img src="${dataUrl}" alt="Imagen">`;
+  box.innerHTML = `<img src="${dataUrl}" alt="Imagen" style="width:100%;height:100%;object-fit:contain;">`;
   box.style.borderStyle = 'solid';
 }
 

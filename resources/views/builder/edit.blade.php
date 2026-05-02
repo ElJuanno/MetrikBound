@@ -819,19 +819,22 @@
 
   .imgBox{
     width:100%;
+    height:100%;
     min-height:170px;
     border-radius:18px;
     border:1px dashed color-mix(in oklab, var(--line) 85%, transparent);
     background: linear-gradient(180deg, rgba(248,250,252,.95), rgba(255,255,255,.95));
-    display:grid;
-    place-items:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     overflow:hidden;
-    cursor:pointer;
+    cursor:move;
   }
 
   .imgBox img{
     width:100%;
-    height:auto;
+    height:100%;
+    object-fit:contain;
     display:block;
   }
 
