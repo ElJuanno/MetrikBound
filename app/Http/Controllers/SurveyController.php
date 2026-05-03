@@ -154,8 +154,8 @@ private function getTemplateBlocks($templateId)
                 'variant' => null,
                 'x' => 580,
                 'y' => 10,
-                'w' => 110,
-                'h' => 60,
+                'w' => 220,
+                'h' => 210,
                 'locked' => false,
                 'z' => 2,
                 'props' => [
