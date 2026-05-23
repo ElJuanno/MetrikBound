@@ -1239,11 +1239,6 @@
       <div class="railLabel">Media</div>
     </div>
 
-    <div class="railBtn" data-tab="templates">
-      <div class="railIcon">📋</div>
-      <div class="railLabel">Plantillas</div>
-    </div>
-
     <div class="railBtn" data-tab="page">
       <div class="railIcon">⚙</div>
       <div class="railLabel">Hoja</div>
@@ -1629,36 +1624,6 @@
           <div class="tLabel">Nota</div>
         </div>
       </div>
-    </div>
-
-    <div id="tab_templates" class="tab" style="display:none;">
-      <div class="leftHead">
-        <h3 class="panelTitle">Plantillas</h3>
-        <p class="panelSub">Inserta plantillas prediseñadas para comenzar rápidamente.</p>
-      </div>
-
-      <div class="toolGrid" style="grid-template-columns:1fr;">
-        <div class="stylePreview template-card" data-template="customer_satisfaction" style="cursor:pointer;">
-          <div class="previewBox" style="min-height:120px;flex-direction:column;gap:8px;padding:16px;">
-            <div style="width:100%;height:20px;background:#3f73c9;border-radius:4px;"></div>
-            <div style="width:80%;height:12px;background:#e2e8f0;border-radius:2px;"></div>
-            <div style="width:60%;height:8px;background:#e2e8f0;border-radius:2px;"></div>
-            <div style="display:flex;gap:4px;width:100%;margin-top:4px;">
-              <div style="width:8px;height:8px;border-radius:50%;border:2px solid #64748b;"></div>
-              <div style="flex:1;height:6px;background:#e2e8f0;border-radius:2px;"></div>
-            </div>
-            <div style="display:flex;gap:4px;width:100%;">
-              <div style="width:8px;height:8px;border-radius:50%;border:2px solid #64748b;"></div>
-              <div style="flex:1;height:6px;background:#e2e8f0;border-radius:2px;"></div>
-            </div>
-          </div>
-          <div class="styleName">Encuesta de Satisfacción del Cliente</div>
-        </div>
-      </div>
-
-      <p class="panelSub" style="margin-top:12px;padding:0 2px;">
-        Haz clic en una plantilla para insertarla en el documento. Si ya tienes bloques, se te pedirá confirmación.
-      </p>
     </div>
 
     <div id="tab_page" class="tab" style="display:none;">

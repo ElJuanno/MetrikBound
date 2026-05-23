@@ -55,7 +55,7 @@
                 'category' => 'Satisfacción'
             ],
             [
-                'id' => null,
+                'id' => 'event_registration',
                 'title' => 'Formulario de Registro de Evento',
                 'desc' => 'Recopila información de asistentes a eventos, conferencias o webinars',
                 'questions' => 6,
