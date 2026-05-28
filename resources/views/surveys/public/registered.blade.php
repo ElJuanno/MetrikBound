@@ -15,10 +15,9 @@
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
             background:
-                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99,102,241,.18), transparent 60%),
-                radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(139,92,246,.14), transparent 55%),
-                radial-gradient(ellipse 60% 80% at 50% 100%, rgba(34,211,238,.10), transparent 60%),
-                linear-gradient(160deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #1e1b4b 100%);
+                radial-gradient(ellipse 70% 50% at 20% 0%, rgba(20,184,166,.16), transparent 60%),
+                radial-gradient(ellipse 70% 50% at 85% 5%, rgba(14,165,233,.10), transparent 55%),
+                linear-gradient(180deg, #f8fafc 0%, #eef4f7 100%);
             background-attachment: fixed;
         }
 
@@ -38,9 +37,9 @@
             background: #ffffff;
             border-radius: 12px;
             box-shadow:
-                0 0 0 1px rgba(255,255,255,.06),
-                0 32px 80px rgba(0,0,0,.45),
-                0 8px 24px rgba(0,0,0,.25);
+                0 0 0 1px rgba(15,23,42,.06),
+                0 24px 60px rgba(15,23,42,.14),
+                0 8px 24px rgba(15,23,42,.08);
             overflow: visible;
             padding-bottom: 60px;
         }
@@ -94,8 +93,8 @@
         .lock-icon {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(139,92,246,.08));
-            border: 1.5px solid rgba(99,102,241,.20);
+            background: rgba(20,184,166,.10);
+            border: 1.5px solid rgba(20,184,166,.22);
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -130,7 +129,7 @@
             justify-content: center;
             gap: 8px;
             padding: 13px 24px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: #0f766e;
             color: #fff;
             font-size: 14px;
             font-weight: 800;
@@ -138,7 +137,7 @@
             border-radius: 12px;
             cursor: pointer;
             text-decoration: none;
-            box-shadow: 0 6px 20px rgba(99,102,241,.35);
+            box-shadow: 0 6px 20px rgba(15,118,110,.25);
             transition: .18s ease;
             letter-spacing: .01em;
         }
@@ -155,10 +154,10 @@
             gap: 8px;
             padding: 12px 24px;
             background: transparent;
-            color: #6366f1;
+            color: #0f766e;
             font-size: 14px;
             font-weight: 700;
-            border: 1.5px solid rgba(99,102,241,.25);
+            border: 1.5px solid rgba(20,184,166,.25);
             border-radius: 12px;
             cursor: pointer;
             text-decoration: none;
@@ -262,7 +261,7 @@
             right: 24px;
             font-size: 12px;
             font-weight: 700;
-            color: rgba(255,255,255,.28);
+            color: rgba(15,23,42,.24);
             letter-spacing: .04em;
             pointer-events: none;
             user-select: none;

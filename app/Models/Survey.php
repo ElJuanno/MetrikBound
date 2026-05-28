@@ -17,15 +17,24 @@ class Survey extends Model
         'title',
         'description',
         'status',
+        'response_mode',
+        'allow_multiple_responses',
+        'is_public',
         'visibility',
         'share_token',
+        'theme_json',
         'builder_state',
         'settings_json',
+        'last_saved_at',
     ];
 
     protected $casts = [
+        'is_public' => 'boolean',
+        'allow_multiple_responses' => 'boolean',
+        'theme_json' => 'array',
         'builder_state' => 'array',
         'settings_json' => 'array',
+        'last_saved_at' => 'datetime',
     ];
 
     protected static function boot()

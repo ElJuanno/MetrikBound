@@ -25,9 +25,9 @@
       --line2:rgba(15,23,42,.12);
       --ink:#0f172a;
       --muted:#64748b;
-      --brand:#6366f1;
-      --brand2:#8b5cf6;
-      --cyan:#22d3ee;
+      --brand:#0f766e;
+      --brand2:#14b8a6;
+      --cyan:#0ea5e9;
       --good:#10b981;
       --warn:#f59e0b;
       --danger:#ef4444;
@@ -60,7 +60,7 @@
       font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(760px 420px at 10% 0%, rgba(99,102,241,.12), transparent 60%),
+        radial-gradient(760px 420px at 10% 0%, rgba(20,184,166,.12), transparent 60%),
         radial-gradient(760px 420px at 100% 10%, rgba(34,211,238,.10), transparent 58%),
         linear-gradient(180deg, var(--bg2), var(--bg));
     }
@@ -115,7 +115,7 @@
       height:12px;
       border-radius:999px;
       background:linear-gradient(135deg,var(--brand),var(--cyan));
-      box-shadow:0 0 0 5px rgba(99,102,241,.12);
+      box-shadow:0 0 0 5px rgba(20,184,166,.12);
       flex:0 0 auto;
     }
 
@@ -227,7 +227,7 @@
     }
 
     .topBtn.primary{
-      background:linear-gradient(135deg, rgba(99,102,241,.15), rgba(34,211,238,.12));
+      background:linear-gradient(135deg, rgba(20,184,166,.15), rgba(14,165,233,.12));
     }
 
     .shareWrap{
@@ -395,8 +395,8 @@
 
         <a href="{{ url()->previous() }}" class="topBtn" style="text-decoration:none;">Volver</a>
 
-        @if(isset($survey) && !empty($survey->token) && \Illuminate\Support\Facades\Route::has('surveys.public.show'))
-          <a href="{{ route('surveys.public.show', $survey->token) }}" target="_blank" class="topBtn primary" style="text-decoration:none;">
+        @if(isset($survey) && !empty($survey->share_token) && \Illuminate\Support\Facades\Route::has('surveys.public.show'))
+          <a href="{{ route('surveys.public.show', $survey->share_token) }}?mode=anonymous" target="_blank" class="topBtn primary" style="text-decoration:none;">
             Vista previa
           </a>
         @else

@@ -15,10 +15,9 @@
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
             background:
-                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99,102,241,.18), transparent 60%),
-                radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(139,92,246,.14), transparent 55%),
-                radial-gradient(ellipse 60% 80% at 50% 100%, rgba(34,211,238,.10), transparent 60%),
-                linear-gradient(160deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #1e1b4b 100%);
+                radial-gradient(ellipse 70% 50% at 20% 0%, rgba(20,184,166,.16), transparent 60%),
+                radial-gradient(ellipse 70% 50% at 85% 5%, rgba(14,165,233,.10), transparent 55%),
+                linear-gradient(180deg, #f8fafc 0%, #eef4f7 100%);
             background-attachment: fixed;
         }
 
@@ -37,7 +36,7 @@
             right: 24px;
             font-size: 12px;
             font-weight: 700;
-            color: rgba(255,255,255,.28);
+            color: rgba(15,23,42,.24);
             letter-spacing: .04em;
             pointer-events: none;
             user-select: none;
@@ -52,9 +51,9 @@
             background: #ffffff;
             border-radius: 12px;
             box-shadow:
-                0 0 0 1px rgba(255,255,255,.06),
-                0 32px 80px rgba(0,0,0,.45),
-                0 8px 24px rgba(0,0,0,.25);
+                0 0 0 1px rgba(15,23,42,.06),
+                0 24px 60px rgba(15,23,42,.14),
+                0 8px 24px rgba(15,23,42,.08);
             overflow: visible;
         }
 
@@ -82,21 +81,21 @@
             align-items: center;
             gap: 10px;
             padding: 14px 36px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: #0f766e;
             color: #fff;
             font-size: 15px;
             font-weight: 800;
             border: none;
             border-radius: 14px;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(99,102,241,.40);
+            box-shadow: 0 8px 24px rgba(15,118,110,.24);
             transition: .18s ease;
             letter-spacing: .02em;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 14px 32px rgba(99,102,241,.50);
+            box-shadow: 0 14px 32px rgba(15,118,110,.30);
         }
 
         .submit-btn:active {
@@ -193,7 +192,7 @@
 
         .yesno-btn input:checked ~ span,
         .yesno-btn.selected {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+            background: #0f766e !important;
             border-color: transparent !important;
             color: #fff !important;
             box-shadow: 0 4px 14px rgba(99,102,241,.35);
@@ -224,7 +223,7 @@
         }
 
         .scale-label.selected {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: #0f766e;
             border-color: transparent;
             color: #fff;
             box-shadow: 0 3px 10px rgba(99,102,241,.30);
@@ -256,14 +255,14 @@
 
 .numeric-btn:hover,
 .scale-btn:hover {
-    background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(139,92,246,.08)) !important;
-    border-color: rgba(99,102,241,.3) !important;
+    background: rgba(20,184,166,.10) !important;
+    border-color: rgba(20,184,166,.3) !important;
     transform: translateY(-1px);
 }
 
 .numeric-btn input:checked + span,
 .scale-btn input:checked + span {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: #0f766e;
     color: white;
 }
 </style>
@@ -581,7 +580,7 @@
                                     max="{{ $max }}" 
                                     value="{{ $min }}"
                                     {{ $required ? 'required' : '' }}
-                                    style="width:100%;accent-color:#6366f1;"
+                                    style="width:100%;accent-color:#0f766e;"
                                     oninput="this.nextElementSibling.querySelector('span').textContent = this.value"
                                 >
                                 <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:#64748b;font-weight:800;">
